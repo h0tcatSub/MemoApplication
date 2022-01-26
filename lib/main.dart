@@ -48,6 +48,7 @@ class _MainMenu extends State<MainMenu> {
       MainMenu.memoDataManager.addMemo(newMemo);
       memoDataController.text = "";
       Fluttertoast.showToast(msg: "メモを追加しました!");
+      updateMemoListValue();
     }
   }
 

@@ -18,17 +18,16 @@ class MemoManager{
 
   List get getMemoList => _memoList;
   void selectAllMemo() async{
-    _memoList.clear();
     _memoList = await _memoDatabase.query("memodata", orderBy: "create_at DESC");
   }
 
-  void addMemo(Memo newMemo) async{
+  void addMemo(Memo newMemo){
     var memoData = <String, dynamic>{
       "uuid": newMemo.getUuid,
       "text_data": newMemo.getTextData,
       "create_at": newMemo.getCreateAt
     };
-    await _memoDatabase.insert("memodata", memoData);
+    _memoDatabase.insert("memodata", memoData);
   }
 
   void runSQL(String sql){
@@ -37,7 +36,7 @@ class MemoManager{
     _memoDatabase.close();
   }
 
-  void deleteMemo(String uuid) async{
+  void deleteMemo(String uuid){
     _memoDatabase.delete("memodata", where: "uuid=?", whereArgs: [uuid]);
   }
 

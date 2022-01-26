@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:memo_application/main.dart';
 
-import 'Memo.dart';
-
 class ShowMemoListForm extends StatelessWidget{
   const ShowMemoListForm({Key? key}) : super(key: key);
   @override
