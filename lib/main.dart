@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:memo_application/EditMemoListForm.dart';
 import 'package:memo_application/Memo.dart';
 import 'package:memo_application/MemoManager.dart';
+
+import 'ShowMemoListForm.dart';
 
 
 void main() async {
@@ -29,7 +32,8 @@ class MainMenu extends StatefulWidget {
   const MainMenu({Key? key, required this.title}) : super(key: key);
 
   final String title;
-  static MemoManager memoDataManager = MemoManager();
+  static late MemoManager memoDataManager;
+
   @override
   State<MainMenu> createState() => _MainMenu();
 }
@@ -42,12 +46,17 @@ class _MainMenu extends State<MainMenu> {
     }else {
       Memo newMemo = Memo(memoDataController.text);
       MainMenu.memoDataManager.addMemo(newMemo);
+      memoDataController.text = "";
       Fluttertoast.showToast(msg: "メモを追加しました!");
     }
   }
 
+  void updateMemoListValue() async {
+    MainMenu.memoDataManager.selectAllMemo();
+  }
   @override
   Widget build(BuildContext context) {
+    MainMenu.memoDataManager = MemoManager();
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -59,12 +68,6 @@ class _MainMenu extends State<MainMenu> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  '',
-                  style: TextStyle(
-                    fontSize: 24,
-                  ),
-                ),
                 Container(
                   width: double.infinity,
                   height: 250,
@@ -77,6 +80,7 @@ class _MainMenu extends State<MainMenu> {
                     ),
                     keyboardType: TextInputType.multiline,
                     maxLines: 100,
+                    controller: memoDataController,
                   ),
                 ),
                 const Padding(
@@ -107,9 +111,14 @@ class _MainMenu extends State<MainMenu> {
                       onPrimary: Colors.white,
                     ),
                     onPressed: (){
-                      Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => ShowMemoListForm()
-                      ));
+                      updateMemoListValue();
+                      if(MainMenu.memoDataManager.getMemoList == null){
+                        Fluttertoast.showToast(msg: "一件もメモが登録されていません。");
+                      }else {
+                        Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => ShowMemoListForm()
+                        ));
+                      }
                     },
                   ),
                 ),
@@ -120,14 +129,14 @@ class _MainMenu extends State<MainMenu> {
                   width: double.infinity,
                   height: 100,
                   child: ElevatedButton(
-                    child: const Text("登録済みのメモを編集する"),
+                    child: const Text("登録済みのメモを管理する"),
                     style: ElevatedButton.styleFrom(
                       primary: Colors.deepOrange,
                       onPrimary: Colors.white,
                     ),
                     onPressed: (){
                       Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => EditMemoForm()
+                          builder: (context) => EditMemoListForm()
                       ));
                     },
                   ),
@@ -139,4 +148,5 @@ class _MainMenu extends State<MainMenu> {
       ),
     );
   }
+
 }
