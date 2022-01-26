@@ -9,33 +9,36 @@ import 'Memo.dart';
 class MemoManager{
 
   late Database _memoDatabase;
-  late List<Map<String, Object?>> memoList;
+  late List<dynamic> _memoList;
 
   MemoManager(){
+    _memoList = [];
     initDatabase();
   }
 
+  List get getMemoList => _memoList;
   void selectAllMemo() async{
-
-    final String sql = """SELECT *
-                             FROM memodata
-                                ORDER BY create_at DESC"""; //最後に記録したメモを先頭にデータを取得する
-    final memoDataRows = await _memoDatabase.rawQuery(sql);
-    if(memoDataRows.isEmpty){
-      return null;
-    }
-    memoList = memoDataRows;
+    _memoList.clear();
+    _memoList = await _memoDatabase.query("memodata", orderBy: "create_at DESC");
   }
 
   void addMemo(Memo newMemo) async{
-    final String sql = """INSERT INTO memodata
-                            VALUES(
-                               ${newMemo.getUuid},
-                               ${newMemo.getTextData},
-                               ${newMemo.getCreateAt}
-                            )
-                       """;
-    await _memoDatabase.execute(sql);
+    var memoData = <String, dynamic>{
+      "uuid": newMemo.getUuid,
+      "text_data": newMemo.getTextData,
+      "create_at": newMemo.getCreateAt
+    };
+    await _memoDatabase.insert("memodata", memoData);
+  }
+
+  void runSQL(String sql){
+    reOpenDatabase();
+    _memoDatabase.execute(sql);
+    _memoDatabase.close();
+  }
+
+  void deleteMemo(String uuid) async{
+    _memoDatabase.delete("memodata", where: "uuid=?", whereArgs: [uuid]);
   }
 
   initDatabase() async {
@@ -43,11 +46,10 @@ class MemoManager{
       """
         CREATE TABLE memodata (
             uuid CHAR(36) PRIMARY KEY NOT NULL,
-            textData TEXT NOT NULL,
+            text_data TEXT NOT NULL,
             create_at DATETIME
         )
       """;
-
     if(Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
       sqfliteFfiInit();
       var databaseFactory = databaseFactoryFfi;
@@ -55,12 +57,29 @@ class MemoManager{
       var path = join(databasePath.path, "memoData.db");
       _memoDatabase = await databaseFactory.openDatabase(path);
       await _memoDatabase.execute(makeTableSql);
+      _memoDatabase.close();
     }else{ //プラットフォームがスマートフォン系の場合、Ffiのバージョンは使用しない。
       var databasePath = await getApplicationDocumentsDirectory();
       var path = join(databasePath.path, "memoData.db");
       _memoDatabase = await openDatabase(path);
       await _memoDatabase.execute(makeTableSql);
+      _memoDatabase.close();
     }
     return _memoDatabase;
+  }
+
+  //データベースを再オープンする
+  void reOpenDatabase() async{
+    if(Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      sqfliteFfiInit();
+      var databaseFactory = databaseFactoryFfi;
+      var databasePath = await getApplicationDocumentsDirectory();
+      var path = join(databasePath.path, "memoData.db");
+      _memoDatabase = await databaseFactory.openDatabase(path);
+    }else{
+      var databasePath = await getApplicationDocumentsDirectory();
+      var path = join(databasePath.path, "memoData.db");
+      _memoDatabase = await openDatabase(path);
+    }
   }
 }
