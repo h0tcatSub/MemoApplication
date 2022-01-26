@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:memo_application/main.dart';
 
@@ -23,12 +22,12 @@ class EditMemoListForm extends StatelessWidget{
             key: UniqueKey(),
             child: Card(
               child: ListTile(
-                title: Text(MainMenu.memoDataManager.memoList[index]["textData"]),
+                title: Text(MainMenu.memoDataManager.getMemoList[index]["text_data"]),
               ),
             ),
             onDismissed: (direction){
-              MainMenu.memoDataManager.deleteMemo(MainMenu.memoDataManager.memoList[index]["uuid"]);
-              MainMenu.memoDataManager.memoList.remove(MainMenu.memoDataManager.memoList[index]["uuid"]);
+              MainMenu.memoDataManager.deleteMemo(MainMenu.memoDataManager.getMemoList[index]["uuid"]);
+              MainMenu.memoDataManager.getMemoList.remove(MainMenu.memoDataManager.getMemoList[index]["uuid"]);
             },
             background: Container(
               color: Colors.red,
