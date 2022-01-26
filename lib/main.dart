@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:memo_application/Memo.dart';
 import 'package:memo_application/MemoManager.dart';
 
+
 void main() async {
   runApp(
     const AddMemoApplication(),
