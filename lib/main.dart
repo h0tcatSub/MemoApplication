@@ -48,7 +48,7 @@ class _MainMenu extends State<MainMenu> {
       MainMenu.memoDataManager.addMemo(newMemo);
       memoDataController.text = "";
       Fluttertoast.showToast(msg: "メモを追加しました!");
-      MainMenu.memoDataManager.selectAllMemo();
+      MainMenu.memoDataManager.syncMemo();
     }
   }
   @override
@@ -108,7 +108,7 @@ class _MainMenu extends State<MainMenu> {
                       onPrimary: Colors.white,
                     ),
                     onPressed: (){
-                      MainMenu.memoDataManager.selectAllMemo();
+                      MainMenu.memoDataManager.syncMemo();
                       if(MainMenu.memoDataManager.getMemoList == null){
                         Fluttertoast.showToast(msg: "一件もメモが登録されていません。");
                       }else {
