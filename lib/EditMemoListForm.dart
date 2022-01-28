@@ -10,7 +10,7 @@ class EditMemoListForm extends StatefulWidget{
 }
 
 class _EditMemoListForm extends State<EditMemoListForm>{
-  List<dynamic> _memoList = MainMenu.memoDataManager.getMemoList;
+
   editMemo(BuildContext context, String uuid, String memo)
   {
     //編集内容を入力するダイアログ
@@ -31,7 +31,7 @@ class _EditMemoListForm extends State<EditMemoListForm>{
                 child: Text("キャンセル"),
                 onPressed: (){
                   newMemoTextController.text = "";
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
               ),
               FlatButton(
@@ -45,19 +45,14 @@ class _EditMemoListForm extends State<EditMemoListForm>{
                     MainMenu.memoDataManager.updateMemo(
                         uuid,
                         newMemoTextController.text);
-                    Navigator.pop(context);
+                    MainMenu.memoDataManager.syncMemo();
+                    Navigator.pop(context, MainMenu.memoDataManager.getMemoList);
                   }
                 },
               )
             ],
           );
-        }).then((value) {
-          //ダイアログが閉じたときにリストを更新する
-          setState(() {
-            MainMenu.memoDataManager.selectAllMemo();
-            _memoList = MainMenu.memoDataManager.getMemoList;
-          });
-    });
+        });
   }
 
   @override
@@ -73,19 +68,22 @@ class _EditMemoListForm extends State<EditMemoListForm>{
               key: UniqueKey(),
               child: Card(
                 child: ListTile(
-                  title: Text(_memoList[index]["text_data"]),
-                  subtitle: Text(_memoList[index]["create_at"]),
-                  onTap: () {
-                    editMemo(
+                  onTap: () async {
+                    var memoList = await editMemo(
                         context,
                         MainMenu.memoDataManager.getMemoList[index]["uuid"],
                         MainMenu.memoDataManager.getMemoList[index]["text_data"]);
+                    setState(() {
+                      MainMenu.memoDataManager.setMemoList(memoList);
+                    });
                   },
+                  title: Text(MainMenu.memoDataManager.getMemoList[index]["text_data"]),
+                  subtitle: Text(MainMenu.memoDataManager.getMemoList[index]["create_at"]),
                 ),
               ),
               onDismissed: (direction){
                 MainMenu.memoDataManager.deleteMemo(MainMenu.memoDataManager.getMemoList[index]["uuid"]);
-                MainMenu.memoDataManager.selectAllMemo();
+                MainMenu.memoDataManager.syncMemo();
               },
               background: Container(
                 color: Colors.red,

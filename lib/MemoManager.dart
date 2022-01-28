@@ -9,14 +9,20 @@ import 'Memo.dart';
 class MemoManager{
 
   late Database _memoDatabase;
-  late List<dynamic> _memoList = [];
+  late List<Map> _memoList = [];
 
   MemoManager(){
     initDatabase();
   }
 
-  List get getMemoList => _memoList;
-  void selectAllMemo() async{
+  List<Map> get getMemoList{
+    syncMemo();
+    return _memoList;
+  }
+  void setMemoList(List<Map> memoList){
+    _memoList = memoList;
+  }
+  void syncMemo() async{
     _memoList = await _memoDatabase.query("memodata", orderBy: "create_at DESC");
   }
 
