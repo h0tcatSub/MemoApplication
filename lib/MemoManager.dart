@@ -9,10 +9,9 @@ import 'Memo.dart';
 class MemoManager{
 
   late Database _memoDatabase;
-  late List<dynamic> _memoList;
+  late List<dynamic> _memoList = [];
 
   MemoManager(){
-    _memoList = [];
     initDatabase();
   }
 
@@ -33,11 +32,18 @@ class MemoManager{
   void runSQL(String sql){
     reOpenDatabase();
     _memoDatabase.execute(sql);
-    _memoDatabase.close();
   }
 
   void deleteMemo(String uuid){
     _memoDatabase.delete("memodata", where: "uuid=?", whereArgs: [uuid]);
+  }
+
+  void updateMemo(String uuid, String newMemo) async{
+    var updateValue = <String, dynamic>{
+      "text_data": newMemo,
+      "create_at": DateTime.now().toIso8601String(),
+    };
+    _memoDatabase.update("memodata", updateValue, where: "uuid=?", whereArgs: [uuid]);
   }
 
   initDatabase() async {
@@ -46,7 +52,7 @@ class MemoManager{
         CREATE TABLE memodata (
             uuid CHAR(36) PRIMARY KEY NOT NULL,
             text_data TEXT NOT NULL,
-            create_at DATETIME
+            create_at TEXT
         )
       """;
     if(Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
@@ -56,13 +62,11 @@ class MemoManager{
       var path = join(databasePath.path, "memoData.db");
       _memoDatabase = await databaseFactory.openDatabase(path);
       await _memoDatabase.execute(makeTableSql);
-      _memoDatabase.close();
     }else{ //プラットフォームがスマートフォン系の場合、Ffiのバージョンは使用しない。
       var databasePath = await getApplicationDocumentsDirectory();
       var path = join(databasePath.path, "memoData.db");
       _memoDatabase = await openDatabase(path);
       await _memoDatabase.execute(makeTableSql);
-      _memoDatabase.close();
     }
     return _memoDatabase;
   }

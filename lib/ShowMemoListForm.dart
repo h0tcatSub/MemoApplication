@@ -12,16 +12,13 @@ class ShowMemoListForm extends StatelessWidget{
       body : ListView.builder(
           itemCount: MainMenu.memoDataManager.getMemoList.length,
           itemBuilder: (context, index){
-            return Dismissible(
-              key: UniqueKey(),
-              child: Card(
-                child: ListTile(
-                  title: Text(MainMenu.memoDataManager.getMemoList[index]["text_data"]),
-                  subtitle: new Text(MainMenu.memoDataManager.getMemoList[index]["create_at"]),
-                ),
+            return Card(
+              child: ListTile(
+                title: Text(MainMenu.memoDataManager.getMemoList[index]["text_data"]),
+                subtitle: Text(MainMenu.memoDataManager.getMemoList[index]["create_at"]),
               ),
             );
-          }
+          },
       ),
     );
   }
