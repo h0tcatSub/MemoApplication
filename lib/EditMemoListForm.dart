@@ -55,6 +55,7 @@ class _EditMemoListForm extends State<EditMemoListForm>{
           //ダイアログが閉じたときにリストを更新する
           setState(() {
             MainMenu.memoDataManager.selectAllMemo();
+            _memoList = MainMenu.memoDataManager.getMemoList;
           });
     });
   }
@@ -72,16 +73,13 @@ class _EditMemoListForm extends State<EditMemoListForm>{
               key: UniqueKey(),
               child: Card(
                 child: ListTile(
-                  title: Text(MainMenu.memoDataManager.getMemoList[index]["text_data"]),
-                  subtitle: Text(MainMenu.memoDataManager.getMemoList[index]["create_at"]),
+                  title: Text(_memoList[index]["text_data"]),
+                  subtitle: Text(_memoList[index]["create_at"]),
                   onTap: () {
                     editMemo(
                         context,
                         MainMenu.memoDataManager.getMemoList[index]["uuid"],
                         MainMenu.memoDataManager.getMemoList[index]["text_data"]);
-                    setState(() {
-                      MainMenu.memoDataManager.selectAllMemo();
-                    });
                   },
                 ),
               ),
