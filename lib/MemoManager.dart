@@ -9,33 +9,41 @@ import 'Memo.dart';
 class MemoManager{
 
   late Database _memoDatabase;
-  late List<Map<String, Object?>> memoList;
+  late List<dynamic> _memoList = [];
 
   MemoManager(){
     initDatabase();
   }
 
+  List get getMemoList => _memoList;
   void selectAllMemo() async{
-
-    final String sql = """SELECT *
-                             FROM memodata
-                                ORDER BY create_at DESC"""; //最後に記録したメモを先頭にデータを取得する
-    final memoDataRows = await _memoDatabase.rawQuery(sql);
-    if(memoDataRows.isEmpty){
-      return null;
-    }
-    memoList = memoDataRows;
+    _memoList = await _memoDatabase.query("memodata", orderBy: "create_at DESC");
   }
 
-  void addMemo(Memo newMemo) async{
-    final String sql = """INSERT INTO memodata
-                            VALUES(
-                               ${newMemo.getUuid},
-                               ${newMemo.getTextData},
-                               ${newMemo.getCreateAt}
-                            )
-                       """;
-    await _memoDatabase.execute(sql);
+  void addMemo(Memo newMemo){
+    var memoData = <String, dynamic>{
+      "uuid": newMemo.getUuid,
+      "text_data": newMemo.getTextData,
+      "create_at": newMemo.getCreateAt
+    };
+    _memoDatabase.insert("memodata", memoData);
+  }
+
+  void runSQL(String sql){
+    reOpenDatabase();
+    _memoDatabase.execute(sql);
+  }
+
+  void deleteMemo(String uuid){
+    _memoDatabase.delete("memodata", where: "uuid=?", whereArgs: [uuid]);
+  }
+
+  void updateMemo(String uuid, String newMemo) async{
+    var updateValue = <String, dynamic>{
+      "text_data": newMemo,
+      "create_at": DateTime.now().toIso8601String(),
+    };
+    _memoDatabase.update("memodata", updateValue, where: "uuid=?", whereArgs: [uuid]);
   }
 
   initDatabase() async {
@@ -43,11 +51,10 @@ class MemoManager{
       """
         CREATE TABLE memodata (
             uuid CHAR(36) PRIMARY KEY NOT NULL,
-            textData TEXT NOT NULL,
-            create_at DATETIME
+            text_data TEXT NOT NULL,
+            create_at TEXT
         )
       """;
-
     if(Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
       sqfliteFfiInit();
       var databaseFactory = databaseFactoryFfi;
@@ -62,5 +69,20 @@ class MemoManager{
       await _memoDatabase.execute(makeTableSql);
     }
     return _memoDatabase;
+  }
+
+  //データベースを再オープンする
+  void reOpenDatabase() async{
+    if(Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      sqfliteFfiInit();
+      var databaseFactory = databaseFactoryFfi;
+      var databasePath = await getApplicationDocumentsDirectory();
+      var path = join(databasePath.path, "memoData.db");
+      _memoDatabase = await databaseFactory.openDatabase(path);
+    }else{
+      var databasePath = await getApplicationDocumentsDirectory();
+      var path = join(databasePath.path, "memoData.db");
+      _memoDatabase = await openDatabase(path);
+    }
   }
 }
