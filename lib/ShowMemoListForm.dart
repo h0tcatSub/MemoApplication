@@ -5,6 +5,7 @@ class ShowMemoListForm extends StatelessWidget{
   const ShowMemoListForm({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context){
+    MainMenu.memoDataManager.syncMemo();
     return Scaffold(
       appBar: AppBar(
           title: Text("登録したメモ一覧")

@@ -2,14 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:memo_application/main.dart';
 
-class EditMemoListForm extends StatefulWidget{
+class EditMemoListForm extends StatelessWidget{
   const EditMemoListForm({Key? key}) : super(key: key);
-
-  @override
-  _EditMemoListForm createState() => _EditMemoListForm();
-}
-
-class _EditMemoListForm extends State<EditMemoListForm>{
 
   editMemo(BuildContext context, String uuid, String memo)
   {
@@ -38,15 +32,17 @@ class _EditMemoListForm extends State<EditMemoListForm>{
                 color: Colors.white,
                 textColor: Colors.black,
                 child: Text("適用"),
-                onPressed: () {
+                onPressed: () async {
                   if(newMemoTextController.text == ""){
                     Fluttertoast.showToast(msg: "メモの内容が未入力です。");
                   }else {
-                    MainMenu.memoDataManager.updateMemo(
+
+                    //メモテーブルを更新してリスト表示も最新の物にする
+                    await MainMenu.memoDataManager.updateMemo(
                         uuid,
                         newMemoTextController.text);
-                    MainMenu.memoDataManager.syncMemo();
-                    Navigator.pop(context, MainMenu.memoDataManager.getMemoList);
+                    await MainMenu.memoDataManager.syncMemo();
+                    Navigator.pushNamedAndRemoveUntil(context, "/ManagementMemo", ModalRoute.withName("/"));
                   }
                 },
               )
@@ -57,25 +53,25 @@ class _EditMemoListForm extends State<EditMemoListForm>{
 
   @override
   Widget build(BuildContext context){
+    MainMenu.memoDataManager.syncMemo();
     return Scaffold(
       appBar: AppBar(
-          title: Text("登録メモを管理"),
+        title: Text("登録メモを管理"),
       ),
       body : ListView.builder(
           itemCount: MainMenu.memoDataManager.getMemoList.length,
-          itemBuilder: (context, index){
+          itemBuilder: (BuildContext listViewContext, index){
             return Dismissible(
               key: UniqueKey(),
               child: Card(
                 child: ListTile(
                   onTap: () async {
-                    var memoList = await editMemo(
-                        context,
+                    await editMemo(
+                        listViewContext,
                         MainMenu.memoDataManager.getMemoList[index]["uuid"],
                         MainMenu.memoDataManager.getMemoList[index]["text_data"]);
-                    setState(() {
-                      MainMenu.memoDataManager.setMemoList(memoList);
-                    });
+
+                    debugPrint(MainMenu.memoDataManager.getMemoList[0]["text_data"]);
                   },
                   title: Text(MainMenu.memoDataManager.getMemoList[index]["text_data"]),
                   subtitle: Text(MainMenu.memoDataManager.getMemoList[index]["create_at"]),
