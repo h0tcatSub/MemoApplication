@@ -69,13 +69,11 @@ class _EditMemoListForm extends State<EditMemoListForm>{
               child: Card(
                 child: ListTile(
                   onTap: () async {
-                    var memoList = await editMemo(
+                    await editMemo(
                         context,
                         MainMenu.memoDataManager.getMemoList[index]["uuid"],
                         MainMenu.memoDataManager.getMemoList[index]["text_data"]);
-                    setState(() {
-                      MainMenu.memoDataManager.setMemoList(memoList);
-                    });
+                    MainMenu.memoDataManager.syncMemo();
                   },
                   title: Text(MainMenu.memoDataManager.getMemoList[index]["text_data"]),
                   subtitle: Text(MainMenu.memoDataManager.getMemoList[index]["create_at"]),
