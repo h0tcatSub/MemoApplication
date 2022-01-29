@@ -90,8 +90,8 @@ class AddMemoApplication extends StatelessWidget {
                       primary: Colors.deepOrange,
                       onPrimary: Colors.white,
                     ),
-                    onPressed: (){
-                      MainMenu.memoDataManager.syncMemo();
+                    onPressed: () async {
+                      await MainMenu.memoDataManager.syncMemo();
                       Navigator.push(context, MaterialPageRoute(
                           builder: (context) => ShowMemoListForm()
                       ));
@@ -110,8 +110,8 @@ class AddMemoApplication extends StatelessWidget {
                       primary: Colors.deepOrange,
                       onPrimary: Colors.white,
                     ),
-                    onPressed: (){
-                      MainMenu.memoDataManager.syncMemo();
+                    onPressed: () async{
+                      await MainMenu.memoDataManager.syncMemo();
                       Navigator.pushNamed(context, "/ManagementMemo");
                     },
                   ),
