@@ -29,6 +29,8 @@ class AddMemoApplication extends StatelessWidget {
     }else {
       Memo newMemo = Memo(memoDataController.text);
       MainMenu.memoDataManager.addMemo(newMemo);
+
+      MainMenu.memoDataManager.syncMemo();
       memoDataController.text = "";
       Fluttertoast.showToast(msg: "メモを追加しました!");
     }

@@ -55,7 +55,6 @@ class EditMemoListForm extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-    MainMenu.memoDataManager.syncMemo();
     return Scaffold(
       appBar: AppBar(
         title: Text(
