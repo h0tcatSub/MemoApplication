@@ -22,7 +22,7 @@ class MemoManager{
   void setMemoList(List<Map> memoList){
     _memoList = memoList;
   }
-  void syncMemo() async{
+  Future<void> syncMemo() async{
     _memoList = await _memoDatabase.query("memodata", orderBy: "create_at DESC");
   }
 
@@ -40,11 +40,11 @@ class MemoManager{
     _memoDatabase.execute(sql);
   }
 
-  void deleteMemo(String uuid){
-    _memoDatabase.delete("memodata", where: "uuid=?", whereArgs: [uuid]);
+  void deleteMemo(String uuid) async{
+    await _memoDatabase.delete("memodata", where: "uuid=?", whereArgs: [uuid]);
   }
 
-  void updateMemo(String uuid, String newMemo) async{
+  Future<void> updateMemo(String uuid, String newMemo) async{
     var updateValue = <String, dynamic>{
       "text_data": newMemo,
       "create_at": DateTime.now().toIso8601String(),

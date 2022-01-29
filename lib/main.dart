@@ -8,38 +8,20 @@ import 'ShowMemoListForm.dart';
 
 
 void main() async {
-  runApp(
-    const AddMemoApplication(),
-  );
+  runApp(new MaterialApp(
+
+    routes: <String, WidgetBuilder>{
+      "/": (_) => new AddMemoApplication(),
+      "/ShowMemo": (_) => new ShowMemoListForm(),
+      "/ManagementMemo": (_) => new EditMemoListForm(),
+    },
+  ));
 }
 
 class AddMemoApplication extends StatelessWidget {
-  const  AddMemoApplication({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'メモ記録帳',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MainMenu(title: 'メモ記録帳'),
-    );
-  }
-}
-
-class MainMenu extends StatefulWidget {
-  const MainMenu({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-  static late MemoManager memoDataManager;
-
-  @override
-  State<MainMenu> createState() => _MainMenu();
-}
-
-class _MainMenu extends State<MainMenu> {
+  AddMemoApplication({Key? key}) : super(key: key);
   final memoDataController = TextEditingController();
+
   void _addMemo(){
     if(memoDataController.text == ""){
       Fluttertoast.showToast(msg: "メモがまだ未入力のようです。");
@@ -48,7 +30,6 @@ class _MainMenu extends State<MainMenu> {
       MainMenu.memoDataManager.addMemo(newMemo);
       memoDataController.text = "";
       Fluttertoast.showToast(msg: "メモを追加しました!");
-      MainMenu.memoDataManager.syncMemo();
     }
   }
   @override
@@ -56,7 +37,8 @@ class _MainMenu extends State<MainMenu> {
     MainMenu.memoDataManager = MemoManager();
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+
+        title: Text('メモ記録帳'),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -108,14 +90,9 @@ class _MainMenu extends State<MainMenu> {
                       onPrimary: Colors.white,
                     ),
                     onPressed: (){
-                      MainMenu.memoDataManager.syncMemo();
-                      if(MainMenu.memoDataManager.getMemoList == null){
-                        Fluttertoast.showToast(msg: "一件もメモが登録されていません。");
-                      }else {
-                        Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => ShowMemoListForm()
-                        ));
-                      }
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => ShowMemoListForm()
+                      ));
                     },
                   ),
                 ),
@@ -132,9 +109,7 @@ class _MainMenu extends State<MainMenu> {
                       onPrimary: Colors.white,
                     ),
                     onPressed: (){
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => EditMemoListForm()
-                      ));
+                      Navigator.pushNamed(context, "/ManagementMemo");
                     },
                   ),
                 ),
@@ -142,6 +117,27 @@ class _MainMenu extends State<MainMenu> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class MainMenu extends StatefulWidget {
+  const MainMenu({Key? key, required this.title}) : super(key: key);
+
+  final String title;
+  static late MemoManager memoDataManager;
+
+  @override
+  State<MainMenu> createState() => _MainMenu();
+}
+
+class _MainMenu extends State<MainMenu> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
       ),
     );
   }
