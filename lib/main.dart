@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:memo_application/EditMemoListForm.dart';
 import 'package:memo_application/Memo.dart';
 import 'package:memo_application/MemoManager.dart';
@@ -38,7 +39,7 @@ class AddMemoApplication extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
 
-        title: Text('メモ記録帳'),
+        title: Text('メモ記録帳',style: GoogleFonts.lato()),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -54,9 +55,7 @@ class AddMemoApplication extends StatelessWidget {
                     decoration: const InputDecoration(
                       hintText: "メモを入力してください。",
                     ),
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
+                    style: GoogleFonts.lato(),
                     keyboardType: TextInputType.multiline,
                     maxLines: 100,
                     controller: memoDataController,
@@ -69,7 +68,7 @@ class AddMemoApplication extends StatelessWidget {
                   width: double.infinity,
                   height: 100,
                   child: ElevatedButton(
-                    child: const Text("メモを追加する"),
+                    child: Text("メモを追加する",style: GoogleFonts.lato()),
                     style: ElevatedButton.styleFrom(
                       primary: Colors.orange,
                       onPrimary: Colors.white,
@@ -84,7 +83,7 @@ class AddMemoApplication extends StatelessWidget {
                   width: double.infinity,
                   height: 100,
                   child: ElevatedButton(
-                    child: const Text("登録されているメモの一覧を表示する"),
+                    child: Text("登録されているメモの一覧を表示する",style: GoogleFonts.lato()),
                     style: ElevatedButton.styleFrom(
                       primary: Colors.deepOrange,
                       onPrimary: Colors.white,
@@ -103,7 +102,7 @@ class AddMemoApplication extends StatelessWidget {
                   width: double.infinity,
                   height: 100,
                   child: ElevatedButton(
-                    child: const Text("登録済みのメモを管理する"),
+                    child: Text("登録済みのメモを管理する",style: GoogleFonts.lato()),
                     style: ElevatedButton.styleFrom(
                       primary: Colors.deepOrange,
                       onPrimary: Colors.white,
@@ -137,7 +136,7 @@ class _MainMenu extends State<MainMenu> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title, style: GoogleFonts.lato()),
       ),
     );
   }

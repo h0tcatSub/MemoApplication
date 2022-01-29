@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:memo_application/main.dart';
 
 class EditMemoListForm extends StatelessWidget{
@@ -13,10 +14,11 @@ class EditMemoListForm extends StatelessWidget{
         context: context,
         builder: (context){
           return AlertDialog(
-            title: Text("メモを編集"),
+            title: Text("メモを編集", style: GoogleFonts.lato()),
             content: TextField(
               controller: newMemoTextController,
               decoration: InputDecoration(hintText: "メモを入力してください"),
+              style: GoogleFonts.lato(),
             ),
             actions: <Widget>[
               FlatButton(
@@ -31,7 +33,7 @@ class EditMemoListForm extends StatelessWidget{
               FlatButton(
                 color: Colors.white,
                 textColor: Colors.black,
-                child: Text("適用"),
+                child: Text("適用",style: GoogleFonts.lato()),
                 onPressed: () async {
                   if(newMemoTextController.text == ""){
                     Fluttertoast.showToast(msg: "メモの内容が未入力です。");
@@ -56,7 +58,9 @@ class EditMemoListForm extends StatelessWidget{
     MainMenu.memoDataManager.syncMemo();
     return Scaffold(
       appBar: AppBar(
-        title: Text("登録メモを管理"),
+        title: Text(
+          "登録メモを管理",
+          style: GoogleFonts.lato()),
       ),
       body : ListView.builder(
           itemCount: MainMenu.memoDataManager.getMemoList.length,
@@ -73,8 +77,8 @@ class EditMemoListForm extends StatelessWidget{
 
                     debugPrint(MainMenu.memoDataManager.getMemoList[0]["text_data"]);
                   },
-                  title: Text(MainMenu.memoDataManager.getMemoList[index]["text_data"]),
-                  subtitle: Text(MainMenu.memoDataManager.getMemoList[index]["create_at"]),
+                  title: Text(MainMenu.memoDataManager.getMemoList[index]["text_data"],style: GoogleFonts.lato()),
+                  subtitle: Text(MainMenu.memoDataManager.getMemoList[index]["create_at"],style: GoogleFonts.lato()),
                 ),
               ),
               onDismissed: (direction){
