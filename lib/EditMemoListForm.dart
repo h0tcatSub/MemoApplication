@@ -73,8 +73,6 @@ class EditMemoListForm extends StatelessWidget{
                         listViewContext,
                         MainMenu.memoDataManager.getMemoList[index]["uuid"],
                         MainMenu.memoDataManager.getMemoList[index]["text_data"]);
-
-                    debugPrint(MainMenu.memoDataManager.getMemoList[0]["text_data"]);
                   },
                   title: Text(MainMenu.memoDataManager.getMemoList[index]["text_data"],style: GoogleFonts.lato()),
                   subtitle: Text(MainMenu.memoDataManager.getMemoList[index]["create_at"],style: GoogleFonts.lato()),
