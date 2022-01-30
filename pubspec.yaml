@@ -39,6 +39,8 @@ dependencies:
   sqflite_common_ffi:
   path_provider_android:
   google_fonts: ^2.1.0
+  table_calendar: ^3.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
