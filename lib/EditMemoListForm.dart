@@ -58,8 +58,8 @@ class EditMemoListForm extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "登録メモを管理",
-          style: GoogleFonts.lato()),
+            "登録メモを管理",
+            style: GoogleFonts.lato()),
       ),
       body : ListView.builder(
           itemCount: MainMenu.memoDataManager.getMemoList.length,

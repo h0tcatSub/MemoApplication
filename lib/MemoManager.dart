@@ -50,7 +50,7 @@ class MemoManager{
 
   initDatabase() async {
     String makeTableSql =
-      """
+    """
         CREATE TABLE memodata (
             uuid CHAR(36) PRIMARY KEY NOT NULL,
             text_data TEXT NOT NULL,

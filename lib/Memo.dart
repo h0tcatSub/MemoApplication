@@ -18,5 +18,4 @@ class Memo{
     _uuid     = Uuid().v1();
     _createAt = DateTime.now().toIso8601String();
   }
-
 }
