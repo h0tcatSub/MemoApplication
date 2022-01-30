@@ -9,12 +9,12 @@ import 'ShowMemoListForm.dart';
 
 
 void main() async {
-  runApp(new MaterialApp(
+  runApp(MaterialApp(
 
     routes: <String, WidgetBuilder>{
-      "/": (_) => new AddMemoApplication(),
-      "/ShowMemo": (_) => new ShowMemoListForm(),
-      "/ManagementMemo": (_) => new EditMemoListForm(),
+      "/": (_) => AddMemoApplication(),
+      "/ShowMemo": (_) => const ShowMemoListForm(),
+      "/ManagementMemo": (_) => const EditMemoListForm(),
     },
   ));
 }
