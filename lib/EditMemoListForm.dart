@@ -8,7 +8,7 @@ class EditMemoListForm extends StatelessWidget{
 
   editMemo(BuildContext context, String uuid, String memo)
   {
-    //編集内容を入力するダイアログ
+    //編集内容を入力するダイアログを表示する
     final newMemoTextController = TextEditingController(text: memo);
     return showDialog(
         context: context,
@@ -39,7 +39,7 @@ class EditMemoListForm extends StatelessWidget{
                     Fluttertoast.showToast(msg: "メモの内容が未入力です。");
                   }else {
 
-                    //メモテーブルを更新してリスト表示も最新の物にする
+                    //メモテーブルを更新してメモリストを更新する
                     await MainMenu.memoDataManager.updateMemo(
                         uuid,
                         newMemoTextController.text);
@@ -78,6 +78,8 @@ class EditMemoListForm extends StatelessWidget{
                   subtitle: Text(MainMenu.memoDataManager.getMemoList[index]["create_at"],style: GoogleFonts.lato()),
                 ),
               ),
+
+              //メモが横にスワイプされたらメモテーブルからデータを削除してリストを更新する
               onDismissed: (direction){
                 MainMenu.memoDataManager.deleteMemo(MainMenu.memoDataManager.getMemoList[index]["uuid"]);
                 MainMenu.memoDataManager.syncMemo();
