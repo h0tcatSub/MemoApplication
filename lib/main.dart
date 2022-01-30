@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:memo_application/EditMemoListForm.dart';
@@ -10,13 +11,42 @@ import 'ShowMemoListForm.dart';
 
 void main() async {
   runApp(MaterialApp(
-
+    //ロケールの設定をする
+    localizationsDelegates: const [
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
+    supportedLocales: const[
+      Locale("ja", "JP"),
+    ],
     routes: <String, WidgetBuilder>{
       "/": (_) => AddMemoApplication(),
       "/ShowMemo": (_) => const ShowMemoListForm(),
       "/ManagementMemo": (_) => const EditMemoListForm(),
     },
   ));
+}
+
+class MainMenu extends StatefulWidget {
+  const MainMenu({Key? key, required this.title}) : super(key: key);
+
+  final String title;
+  static late MemoManager memoDataManager;
+
+  @override
+  State<MainMenu> createState() => _MainMenu();
+}
+
+class _MainMenu extends State<MainMenu> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title, style: GoogleFonts.lato()),
+      ),
+    );
+  }
 }
 
 class AddMemoApplication extends StatelessWidget {
@@ -40,7 +70,6 @@ class AddMemoApplication extends StatelessWidget {
     MainMenu.memoDataManager = MemoManager();
     return Scaffold(
       appBar: AppBar(
-
         title: Text('メモ記録帳',style: GoogleFonts.lato()),
       ),
       body: Center(
@@ -93,7 +122,7 @@ class AddMemoApplication extends StatelessWidget {
                     onPressed: () async {
                       await MainMenu.memoDataManager.syncMemo();
                       Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => ShowMemoListForm()
+                          builder: (context) => const ShowMemoListForm()
                       ));
                     },
                   ),
@@ -125,24 +154,3 @@ class AddMemoApplication extends StatelessWidget {
   }
 }
 
-class MainMenu extends StatefulWidget {
-  const MainMenu({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-  static late MemoManager memoDataManager;
-
-  @override
-  State<MainMenu> createState() => _MainMenu();
-}
-
-class _MainMenu extends State<MainMenu> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title, style: GoogleFonts.lato()),
-      ),
-    );
-  }
-
-}
