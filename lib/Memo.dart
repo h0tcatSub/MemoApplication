@@ -19,9 +19,4 @@ class Memo{
     _createAt = DateTime.now().toIso8601String();
   }
 
-  Memo.fromMap(Map map){
-    _uuid = map[_uuid];
-    _textData = map[_textData];
-    _createAt = map[_createAt];
-  }
 }
