@@ -24,7 +24,7 @@ class EditMemoListForm extends StatelessWidget{
               FlatButton(
                 color: Colors.white,
                 textColor: Colors.red,
-                child: Text("キャンセル"),
+                child: Text("キャンセル", style: GoogleFonts.lato()),
                 onPressed: (){
                   newMemoTextController.text = "";
                   Navigator.of(context).pop();
