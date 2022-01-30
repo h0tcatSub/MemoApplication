@@ -10,6 +10,7 @@ class MemoManager{
 
   late Database _memoDatabase;
   late List<Map> _memoList = [];
+  final bool _isNotSmartPhone = Platform.isWindows || Platform.isLinux || Platform.isMacOS;
 
   MemoManager(){
     initDatabase();
@@ -35,11 +36,6 @@ class MemoManager{
     _memoDatabase.insert("memodata", memoData);
   }
 
-  void runSQL(String sql){
-    reOpenDatabase();
-    _memoDatabase.execute(sql);
-  }
-
   void deleteMemo(String uuid) async{
     await _memoDatabase.delete("memodata", where: "uuid=?", whereArgs: [uuid]);
   }
@@ -61,7 +57,7 @@ class MemoManager{
             create_at TEXT
         )
       """;
-    if(Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    if(_isNotSmartPhone) {
       sqfliteFfiInit();
       var databaseFactory = databaseFactoryFfi;
       var databasePath = await getApplicationDocumentsDirectory();
@@ -77,18 +73,4 @@ class MemoManager{
     return _memoDatabase;
   }
 
-  //データベースを再オープンする
-  void reOpenDatabase() async{
-    if(Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-      sqfliteFfiInit();
-      var databaseFactory = databaseFactoryFfi;
-      var databasePath = await getApplicationDocumentsDirectory();
-      var path = join(databasePath.path, "memoData.db");
-      _memoDatabase = await databaseFactory.openDatabase(path);
-    }else{
-      var databasePath = await getApplicationDocumentsDirectory();
-      var path = join(databasePath.path, "memoData.db");
-      _memoDatabase = await openDatabase(path);
-    }
-  }
 }
