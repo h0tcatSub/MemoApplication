@@ -32,7 +32,7 @@ class MainMenu extends StatefulWidget {
   const MainMenu({Key? key, required this.title}) : super(key: key);
 
   final String title;
-  static late MemoManager memoDataManager;
+  static MemoManager memoDataManager = MemoManager();
 
   @override
   State<MainMenu> createState() => _MainMenu();
