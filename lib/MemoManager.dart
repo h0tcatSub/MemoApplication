@@ -8,8 +8,8 @@ import 'Memo.dart';
 
 class MemoManager{
 
+  List<Map> _memoList = [];
   late Database _memoDataBase;
-  late List<Map> _memoList = [];
   final bool _isNotSmartPhone = Platform.isWindows || Platform.isLinux || Platform.isMacOS;
 
   MemoManager(){
