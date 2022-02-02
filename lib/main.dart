@@ -32,8 +32,9 @@ class MainMenu extends StatefulWidget {
   const MainMenu({Key? key, required this.title}) : super(key: key);
 
   final String title;
-  static MemoManager memoDataManager = MemoManager();
+  static final MemoManager _memoDataManager = MemoManager();
 
+  static get getMemoDataManager => _memoDataManager;
   @override
   State<MainMenu> createState() => _MainMenu();
 }
@@ -58,16 +59,15 @@ class AddMemoApplication extends StatelessWidget {
       Fluttertoast.showToast(msg: "メモがまだ未入力のようです。");
     }else {
       Memo newMemo = Memo(memoDataController.text);
-      MainMenu.memoDataManager.addMemo(newMemo);
+      MainMenu.getMemoDataManager.addMemo(newMemo);
 
-      MainMenu.memoDataManager.syncMemo();
+      MainMenu.getMemoDataManager.syncMemo();
       memoDataController.text = "";
       Fluttertoast.showToast(msg: "メモを追加しました!");
     }
   }
   @override
   Widget build(BuildContext context) {
-    MainMenu.memoDataManager = MemoManager();
     return Scaffold(
       appBar: AppBar(
         title: Text('メモ記録帳',style: GoogleFonts.lato()),
@@ -120,7 +120,7 @@ class AddMemoApplication extends StatelessWidget {
                       onPrimary: Colors.white,
                     ),
                     onPressed: () async {
-                      await MainMenu.memoDataManager.syncMemo();
+                      await MainMenu.getMemoDataManager.syncMemo();
                       Navigator.push(context, MaterialPageRoute(
                           builder: (context) => const ShowMemoListForm()
                       ));
@@ -140,7 +140,7 @@ class AddMemoApplication extends StatelessWidget {
                       onPrimary: Colors.white,
                     ),
                     onPressed: () async{
-                      await MainMenu.memoDataManager.syncMemo();
+                      await MainMenu.getMemoDataManager.syncMemo();
                       Navigator.pushNamed(context, "/ManagementMemo");
                     },
                   ),
@@ -153,4 +153,3 @@ class AddMemoApplication extends StatelessWidget {
     );
   }
 }
-

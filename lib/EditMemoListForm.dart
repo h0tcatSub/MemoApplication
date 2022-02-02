@@ -40,10 +40,10 @@ class EditMemoListForm extends StatelessWidget{
                   }else {
 
                     //メモテーブルを更新してメモリストを更新する
-                    await MainMenu.memoDataManager.updateMemo(
+                    await MainMenu.getMemoDataManager.updateMemo(
                         uuid,
                         newMemoTextController.text);
-                    await MainMenu.memoDataManager.syncMemo();
+                    await MainMenu.getMemoDataManager.syncMemo();
                     Navigator.pushNamedAndRemoveUntil(context, "/ManagementMemo", ModalRoute.withName("/"));
                   }
                 },
@@ -62,7 +62,7 @@ class EditMemoListForm extends StatelessWidget{
             style: GoogleFonts.lato()),
       ),
       body : ListView.builder(
-          itemCount: MainMenu.memoDataManager.getMemoList.length,
+          itemCount: MainMenu.getMemoDataManager.getMemoList.length,
           itemBuilder: (BuildContext listViewContext, index){
             return Dismissible(
               key: UniqueKey(),
@@ -71,18 +71,18 @@ class EditMemoListForm extends StatelessWidget{
                   onTap: () async {
                     await editMemo(
                         listViewContext,
-                        MainMenu.memoDataManager.getMemoList[index]["uuid"],
-                        MainMenu.memoDataManager.getMemoList[index]["text_data"]);
+                        MainMenu.getMemoDataManager.getMemoList[index]["uuid"],
+                        MainMenu.getMemoDataManager.getMemoList[index]["text_data"]);
                   },
-                  title: Text(MainMenu.memoDataManager.getMemoList[index]["text_data"],style: GoogleFonts.lato()),
-                  subtitle: Text(MainMenu.memoDataManager.getMemoList[index]["create_at"],style: GoogleFonts.lato()),
+                  title: Text(MainMenu.getMemoDataManager.getMemoList[index]["text_data"],style: GoogleFonts.lato()),
+                  subtitle: Text(MainMenu.getMemoDataManager.getMemoList[index]["create_at"],style: GoogleFonts.lato()),
                 ),
               ),
 
               //メモが横にスワイプされたらメモテーブルからデータを削除してリストを更新する
               onDismissed: (direction){
-                MainMenu.memoDataManager.deleteMemo(MainMenu.memoDataManager.getMemoList[index]["uuid"]);
-                MainMenu.memoDataManager.syncMemo();
+                MainMenu.getMemoDataManager.deleteMemo(MainMenu.getMemoDataManager.getMemoList[index]["uuid"]);
+                MainMenu.getMemoDataManager.syncMemo();
               },
               background: Container(
                 color: Colors.red,
