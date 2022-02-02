@@ -61,7 +61,6 @@ class AddMemoApplication extends StatelessWidget {
       Memo newMemo = Memo(memoDataController.text);
       MainMenu.getMemoDataManager.addMemo(newMemo);
 
-      MainMenu.getMemoDataManager.syncMemo();
       memoDataController.text = "";
       Fluttertoast.showToast(msg: "メモを追加しました!");
     }
@@ -120,6 +119,7 @@ class AddMemoApplication extends StatelessWidget {
                       onPrimary: Colors.white,
                     ),
                     onPressed: () async {
+
                       await MainMenu.getMemoDataManager.syncMemo();
                       Navigator.push(context, MaterialPageRoute(
                           builder: (context) => const ShowMemoListForm()
