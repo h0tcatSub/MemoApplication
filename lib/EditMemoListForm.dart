@@ -55,6 +55,7 @@ class EditMemoListForm extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -73,6 +74,7 @@ class EditMemoListForm extends StatelessWidget{
                         listViewContext,
                         MainMenu.getMemoDataManager.getMemoList[index]["uuid"],
                         MainMenu.getMemoDataManager.getMemoList[index]["text_data"]);
+
                   },
                   title: Text(MainMenu.getMemoDataManager.getMemoList[index]["text_data"],style: GoogleFonts.lato()),
                   subtitle: Text(MainMenu.getMemoDataManager.getMemoList[index]["create_at"],style: GoogleFonts.lato()),
@@ -82,7 +84,6 @@ class EditMemoListForm extends StatelessWidget{
               //メモが横にスワイプされたらメモテーブルからデータを削除してリストを更新する
               onDismissed: (direction){
                 MainMenu.getMemoDataManager.deleteMemo(MainMenu.getMemoDataManager.getMemoList[index]["uuid"]);
-                MainMenu.getMemoDataManager.syncMemo();
               },
               background: Container(
                 color: Colors.red,
