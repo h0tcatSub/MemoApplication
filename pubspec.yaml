@@ -38,6 +38,7 @@ dependencies:
   path_provider:
   sqflite_common_ffi:
   path_provider_android:
+  # 中華フォントに対応する
   google_fonts: ^2.1.0
   table_calendar: ^3.0.0
 
