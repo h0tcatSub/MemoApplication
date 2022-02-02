@@ -8,7 +8,7 @@ class EditMemoListForm extends StatelessWidget{
 
   editMemo(BuildContext context, String uuid, String memo)
   {
-    //編集内容を入力するダイアログ
+    //編集内容を入力するダイアログを表示する
     final newMemoTextController = TextEditingController(text: memo);
     return showDialog(
         context: context,
@@ -24,7 +24,7 @@ class EditMemoListForm extends StatelessWidget{
               FlatButton(
                 color: Colors.white,
                 textColor: Colors.red,
-                child: Text("キャンセル"),
+                child: Text("キャンセル", style: GoogleFonts.lato()),
                 onPressed: (){
                   newMemoTextController.text = "";
                   Navigator.of(context).pop();
@@ -39,11 +39,11 @@ class EditMemoListForm extends StatelessWidget{
                     Fluttertoast.showToast(msg: "メモの内容が未入力です。");
                   }else {
 
-                    //メモテーブルを更新してリスト表示も最新の物にする
-                    await MainMenu.memoDataManager.updateMemo(
+                    //メモテーブルを更新してメモリストを更新する
+                    await MainMenu.getMemoDataManager.updateMemo(
                         uuid,
                         newMemoTextController.text);
-                    await MainMenu.memoDataManager.syncMemo();
+                    await MainMenu.getMemoDataManager.syncMemo();
                     Navigator.pushNamedAndRemoveUntil(context, "/ManagementMemo", ModalRoute.withName("/"));
                   }
                 },
@@ -55,14 +55,15 @@ class EditMemoListForm extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "登録メモを管理",
-          style: GoogleFonts.lato()),
+            "登録メモを管理",
+            style: GoogleFonts.lato()),
       ),
       body : ListView.builder(
-          itemCount: MainMenu.memoDataManager.getMemoList.length,
+          itemCount: MainMenu.getMemoDataManager.getMemoList.length,
           itemBuilder: (BuildContext listViewContext, index){
             return Dismissible(
               key: UniqueKey(),
@@ -71,18 +72,18 @@ class EditMemoListForm extends StatelessWidget{
                   onTap: () async {
                     await editMemo(
                         listViewContext,
-                        MainMenu.memoDataManager.getMemoList[index]["uuid"],
-                        MainMenu.memoDataManager.getMemoList[index]["text_data"]);
+                        MainMenu.getMemoDataManager.getMemoList[index]["uuid"],
+                        MainMenu.getMemoDataManager.getMemoList[index]["text_data"]);
 
-                    debugPrint(MainMenu.memoDataManager.getMemoList[0]["text_data"]);
                   },
-                  title: Text(MainMenu.memoDataManager.getMemoList[index]["text_data"],style: GoogleFonts.lato()),
-                  subtitle: Text(MainMenu.memoDataManager.getMemoList[index]["create_at"],style: GoogleFonts.lato()),
+                  title: Text(MainMenu.getMemoDataManager.getMemoList[index]["text_data"],style: GoogleFonts.lato()),
+                  subtitle: Text(MainMenu.getMemoDataManager.getMemoList[index]["create_at"],style: GoogleFonts.lato()),
                 ),
               ),
+
+              //メモが横にスワイプされたらメモテーブルからデータを削除してリストを更新する
               onDismissed: (direction){
-                MainMenu.memoDataManager.deleteMemo(MainMenu.memoDataManager.getMemoList[index]["uuid"]);
-                MainMenu.memoDataManager.syncMemo();
+                MainMenu.getMemoDataManager.deleteMemo(MainMenu.getMemoDataManager.getMemoList[index]["uuid"]);
               },
               background: Container(
                 color: Colors.red,
