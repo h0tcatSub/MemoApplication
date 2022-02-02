@@ -17,7 +17,6 @@ class MemoManager{
   }
 
   List<Map> get getMemoList{
-    syncMemo();
     return _memoList;
   }
   void setMemoList(List<Map> memoList){
