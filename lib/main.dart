@@ -119,7 +119,6 @@ class AddMemoApplication extends StatelessWidget {
                       onPrimary: Colors.white,
                     ),
                     onPressed: () async {
-
                       await MainMenu.getMemoDataManager.syncMemo();
                       Navigator.push(context, MaterialPageRoute(
                           builder: (context) => const ShowMemoListForm()
