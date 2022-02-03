@@ -142,10 +142,7 @@ class AddMemoApplication extends StatelessWidget {
                       primary: Colors.deepOrange,
                       onPrimary: Colors.white,
                     ),
-                    onPressed: () async{
-                      await getMemoManager.syncMemoWithCalender(
-                          DateFormat("yyyy-MM-dd").format(DateTime.now()).toString());
-                      getMemoManager.setSelectedDay(DateTime.now());
+                    onPressed: () {
                       Navigator.pushNamed(context, "/ManagementMemo");
                     },
                   ),
