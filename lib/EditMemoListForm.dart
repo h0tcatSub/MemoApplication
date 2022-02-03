@@ -118,15 +118,15 @@ class _EditMemoListForm extends State<EditMemoListForm>{
                             onTap: () async {
                               await editMemo(
                                   listViewContext,
-                                  (getMemoManager.getMemoList)[index]["uuid"],
-                                  (getMemoManager.getMemoList)[index]["text_data"]);
+                                  getMemoManager.getMemoList[index]["uuid"],
+                                  getMemoManager.getMemoList[index]["text_data"]);
                             },
-                            title: Text((getMemoManager.getMemoList)[index]["text_data"]),
+                            title: Text(getMemoManager.getMemoList[index]["text_data"]),
                           ),
                         ),
                         //メモが横にスワイプされたらメモテーブルからデータを削除してリストを更新する
                         onDismissed: (direction){
-                          getMemoManager.deleteMemo((getMemoManager.getMemoList as List)[index]["uuid"]);
+                          getMemoManager.deleteMemo(getMemoManager.getMemoList[index]["uuid"]);
                         },
                         background: Container(
                           color: Colors.red,
