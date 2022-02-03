@@ -51,7 +51,7 @@ class _EditMemoListForm extends State<EditMemoListForm>{
                         uuid,
                         newMemoTextController.text);
                     await getMemoManager.syncMemoWithCalender(
-                        DateFormat("yyyy-mm/dd").format(DateTime.now()).toString());
+                        DateFormat("yyyy-MM-dd").format(DateTime.now()).toString());
                     Navigator.pushNamedAndRemoveUntil(context, "/ManagementMemo", ModalRoute.withName("/"));
                   }
                 },
