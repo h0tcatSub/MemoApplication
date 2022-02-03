@@ -52,7 +52,7 @@ class _EditMemoListForm extends State<EditMemoListForm>{
                   if(newMemoTextController.text == ""){
                     Fluttertoast.showToast(msg: "メモの内容が未入力です。");
                   }else {
-                    //メモテーブルを更新してメモリストを更新する
+                    //メモテーブルを更新して表示用メモリストを最新にする
                     await getMemoManager.updateMemo(
                         uuid,
                         newMemoTextController.text);
@@ -72,8 +72,8 @@ class _EditMemoListForm extends State<EditMemoListForm>{
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            "登録メモを管理",
-            style: GoogleFonts.lato()),
+          "登録メモを管理",
+          style: GoogleFonts.lato()),
       ),
       body : Center(
         child: SingleChildScrollView(

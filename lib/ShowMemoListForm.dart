@@ -73,5 +73,4 @@ class _ShowMemoListForm extends State<ShowMemoListForm>{
       ),
     );
   }
-
 }
