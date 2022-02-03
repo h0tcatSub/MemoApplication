@@ -8,7 +8,7 @@ import 'package:memo_application/MemoManager.dart';
 
 import 'ShowMemoListForm.dart';
 
-
+static MemoManager
 void main() async {
   runApp(MaterialApp(
     //ロケールの設定をする
@@ -32,9 +32,6 @@ class MainMenu extends StatefulWidget {
   const MainMenu({Key? key, required this.title}) : super(key: key);
 
   final String title;
-  static final MemoManager _memoDataManager = MemoManager();
-
-  static get getMemoDataManager => _memoDataManager;
   @override
   State<MainMenu> createState() => _MainMenu();
 }
@@ -59,7 +56,7 @@ class AddMemoApplication extends StatelessWidget {
       Fluttertoast.showToast(msg: "メモがまだ未入力のようです。");
     }else {
       Memo newMemo = Memo(memoDataController.text);
-      MainMenu.getMemoDataManager.addMemo(newMemo);
+      MemoManager.addMemo(newMemo);
 
       memoDataController.text = "";
       Fluttertoast.showToast(msg: "メモを追加しました!");
@@ -118,8 +115,8 @@ class AddMemoApplication extends StatelessWidget {
                       primary: Colors.deepOrange,
                       onPrimary: Colors.white,
                     ),
-                    onPressed: () async {
-                      await MainMenu.getMemoDataManager.syncMemo();
+                    onPressed: () {
+                      MemoManager.syncMemo();
                       Navigator.push(context, MaterialPageRoute(
                           builder: (context) => const ShowMemoListForm()
                       ));
@@ -139,7 +136,7 @@ class AddMemoApplication extends StatelessWidget {
                       onPrimary: Colors.white,
                     ),
                     onPressed: () async{
-                      await MainMenu.getMemoDataManager.syncMemo();
+                      await MemoManager.syncMemo();
                       Navigator.pushNamed(context, "/ManagementMemo");
                     },
                   ),
