@@ -11,15 +11,11 @@ class MemoManager{
 
   static List<Map> _memoList = [];
   static late Database _memoDataBase;
-  final bool _isNotSmartPhone = Platform.isWindows || Platform.isLinux || Platform.isMacOS;
+  static final bool _isNotSmartPhone = Platform.isWindows || Platform.isLinux || Platform.isMacOS;
 
   static late DateTime _selectedDay = DateTime.now();
   static DateTime _nowDateTime = _selectedDay;
   static CalendarFormat _calenderViewFormat = CalendarFormat.month;
-
-  MemoManager(){
-    initDatabase();
-  }
 
   static List<Map> get getMemoList => _memoList;
   static get getCalenderViewFormat => _calenderViewFormat;
@@ -54,18 +50,18 @@ class MemoManager{
     _memoDataBase.insert("memodata", memoData);
   }
 
-  void deleteMemo(String uuid) async{
+  static void deleteMemo(String uuid) async{
     await _memoDataBase.delete("memodata", where: "uuid=?", whereArgs: [uuid]);
   }
 
-  Future<void> updateMemo(String uuid, String newMemo) async{
+  static Future<void> updateMemo(String uuid, String newMemo) async{
     var updateValue = <String, dynamic>{
       "text_data": newMemo,
     };
     _memoDataBase.update("memodata", updateValue, where: "uuid=?", whereArgs: [uuid]);
   }
 
-  initDatabase() async {
+  static initDatabase() async {
     String makeTableSql =
     """
         CREATE TABLE memodata (

@@ -47,12 +47,11 @@ class _EditMemoListForm extends State<EditMemoListForm>{
                   if(newMemoTextController.text == ""){
                     Fluttertoast.showToast(msg: "メモの内容が未入力です。");
                   }else {
-
                     //メモテーブルを更新してメモリストを更新する
-                    await MainMenu.getMemoDataManager.updateMemo(
+                    await MemoManager.updateMemo(
                         uuid,
                         newMemoTextController.text);
-                    await MainMenu.getMemoDataManager.syncMemo();
+                    await MemoManager.syncMemo();
                     Navigator.pushNamedAndRemoveUntil(context, "/ManagementMemo", ModalRoute.withName("/"));
                   }
                 },
@@ -101,7 +100,7 @@ class _EditMemoListForm extends State<EditMemoListForm>{
                         MemoManager.setSelectedDay(selectedDay);
                         MemoManager.setNowDateTimeDay(focusedDay);
 
-                        MainMenu.getMemoDataManager.syncMemo(focusedDay.now().toUtc());
+                        MemoManager.syncMemoWithCalender(focusedDay.toUtc().toString());
                       });
                     }
                   },
@@ -114,33 +113,32 @@ class _EditMemoListForm extends State<EditMemoListForm>{
                 width: double.infinity,
                 height: 100,
                 child: ListView.builder(
-                  itemCount: MainMenu.getMemoDataManager.getMemoList.length,
-                  itemBuilder: (BuildContext listViewContext, index){
-                  return Dismissible(
-                    key: UniqueKey(),
-                    child: Card(
-                    child: ListTile(
-                    onTap: () async {
-                      await editMemo(
-                        listViewContext,
-                        MainMenu.getMemoDataManager.getMemoList[index]["uuid"],
-                        MainMenu.getMemoDataManager.getMemoList[index]["text_data"]);
-
-                        },
-                        title: Text(MainMenu.getMemoDataManager.getMemoList[index]["text_data"],style: GoogleFonts.lato()),
-                        subtitle: Text("作成日: ${MainMenu.getMemoDataManager.getMemoList[index]["create_at"]}",style: GoogleFonts.lato()),
-                        ),
+                    itemCount: MemoManager.getMemoList.length,
+                    itemBuilder: (BuildContext listViewContext, index){
+                      return Dismissible(
+                        key: UniqueKey(),
+                        child: Card(
+                          child: ListTile(
+                            onTap: () async {
+                              await editMemo(
+                                  listViewContext,
+                                  MemoManager.getMemoList[index]["uuid"],
+                                  MemoManager.getMemoList[index]["text_data"]);
+                            },
+                            title: Text(MemoManager.getMemoList[index]["text_data"],style: GoogleFonts.lato()),
+                            subtitle: Text("作成日: ${MemoManager.getMemoList[index]["create_at"]}",style: GoogleFonts.lato()),
+                          ),
                         ),
 
                         //メモが横にスワイプされたらメモテーブルからデータを削除してリストを更新する
                         onDismissed: (direction){
-                        MainMenu.getMemoDataManager.deleteMemo(MainMenu.getMemoDataManager.getMemoList[index]["uuid"]);
+                          MemoManager.deleteMemo(MemoManager.getMemoList[index]["uuid"]);
                         },
                         background: Container(
-                        color: Colors.red,
-                      ),
-                    );
-                  }
+                          color: Colors.red,
+                        ),
+                      );
+                    }
                 ),
               )
             ],
@@ -148,5 +146,4 @@ class _EditMemoListForm extends State<EditMemoListForm>{
         ),
       ),
     );
-  }
-}
+  } }

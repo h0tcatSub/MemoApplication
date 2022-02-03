@@ -16,6 +16,6 @@ class Memo{
   Memo(String textData){
     _textData = textData;
     _uuid     = Uuid().v1();
-    _createAt = DateTime.now().toUtc().toIso8601String();
+    _createAt = DateTime.now().toUtc().toString();
   }
 }

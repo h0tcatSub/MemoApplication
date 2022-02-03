@@ -8,8 +8,8 @@ import 'package:memo_application/MemoManager.dart';
 
 import 'ShowMemoListForm.dart';
 
-static MemoManager
 void main() async {
+  MemoManager.initDatabase();
   runApp(MaterialApp(
     //ロケールの設定をする
     localizationsDelegates: const [
