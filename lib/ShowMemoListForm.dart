@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:memo_application/main.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-List _syncList(DateTime selectedDay) {
-  getMemoManager.syncMemoWithCalender(
-      DateFormat("yyyy-MM-dd").format(selectedDay).toString());
-  return getMemoManager.getMemoList;
-}
 class ShowMemoListForm extends StatefulWidget{
   const ShowMemoListForm({Key? key}) : super(key: key);
 
@@ -19,11 +13,12 @@ class ShowMemoListForm extends StatefulWidget{
 class _ShowMemoListForm extends State<ShowMemoListForm>{
   @override
   Widget build(BuildContext context){
+    //一回目は現在の日付ででメモを取得する
     return Scaffold(
       appBar: AppBar(
           title: Text("登録したメモ一覧",style: GoogleFonts.lato())
       ),
-      body : Center(
+      body : Container(
         child: SingleChildScrollView(
           child: Container(
             width: double.infinity,
@@ -31,10 +26,14 @@ class _ShowMemoListForm extends State<ShowMemoListForm>{
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TableCalendar(
-                  focusedDay: getMemoManager.getNowDateTime,
+                  focusedDay: getMemoManager.getNowFocusDateTime,
                   calendarFormat: getMemoManager.getCalenderViewFormat,
                   firstDay: DateTime.utc(2020, 1, 1),
                   lastDay: DateTime.utc(2999, 12, 31),
+
+                  onPageChanged: (focusDay){
+                    getMemoManager.setNowFocusTimeDay(focusDay);
+                  },
                   onFormatChanged: (format){
                     //現在のフォーマットと異なっていたら変更を適用する
                     if(getMemoManager.getCalenderViewFormat != format){
@@ -44,23 +43,24 @@ class _ShowMemoListForm extends State<ShowMemoListForm>{
                   selectedDayPredicate: (day) {
                     return isSameDay(getMemoManager.getSelectedDay, day);
                   },
-                  onDaySelected: (selectedDay, focusedDay){
+                  onDaySelected: (selectedDay, focusedDay) async {
                     if (!isSameDay(getMemoManager.getSelectedDay, selectedDay)) {
-                      setState(() {
-                        getMemoManager.setSelectedDay(selectedDay);
-                        getMemoManager.setNowDateTimeDay(focusedDay);
-                      });
+                      await getMemoManager.setSelectedDay(selectedDay);
+                      await getMemoManager.setNowFocusTimeDay(focusedDay);
+                      await getMemoManager.syncListWithDate(getMemoManager.getSelectedDay);
+
+                      setState(() {});
                     }
                   },
+
                 ),
                 ListView.builder(
                   shrinkWrap: true,
-                  itemCount: getMemoManager.getMemoList.length,
+                  itemCount: getMemoManager.getMemoList.length ,
                   itemBuilder: (context, index){
                     return Card(
                       child: ListTile(
-                        title: _syncList(getMemoManager.getSelectedDay)
-                            .map((syncMemo) => Text(syncMemo["text_data"].toString())).toList()[index],
+                        title: Text(getMemoManager.getMemoList[index]["text_data"]),
                       ),
                     );
                   },

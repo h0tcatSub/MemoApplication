@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -17,19 +18,24 @@ class MemoManager{
   DateTime _nowDateTime = DateTime.now();
   CalendarFormat _calenderViewFormat = CalendarFormat.month;
 
-  List<Map> get getMemoList => _memoList;
+  List get getMemoList => _memoList;
   get getCalenderViewFormat => _calenderViewFormat;
-  get getNowDateTime => _nowDateTime;
+  get getNowFocusDateTime => _nowDateTime;
   get getSelectedDay => _selectedDay;
 
   MemoManager(){
     initDatabase();
   }
 
-  void setSelectedDay(DateTime day){
+  Future<void> syncListWithDate(DateTime selectedDay) async {
+    syncMemoWithCalender(
+        DateFormat("yyyy-MM-dd").format(selectedDay).toString());
+  }
+
+  Future<void> setSelectedDay(DateTime day) async {
     _selectedDay = day;
   }
-  void setNowDateTimeDay(DateTime day){
+  Future<void> setNowFocusTimeDay(DateTime day) async{
     _nowDateTime = day;
   }
   void setCalenderViewFormat(CalendarFormat format){
