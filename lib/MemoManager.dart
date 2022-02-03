@@ -9,39 +9,43 @@ import 'Memo.dart';
 
 class MemoManager{
 
-  static List<Map> _memoList = [];
-  static late Database _memoDataBase;
-  static final bool _isNotSmartPhone = Platform.isWindows || Platform.isLinux || Platform.isMacOS;
+  List<Map> _memoList = [];
+  late Database _memoDataBase;
+  final bool _isNotSmartPhone = Platform.isWindows || Platform.isLinux || Platform.isMacOS;
 
-  static late DateTime _selectedDay = DateTime.now();
-  static DateTime _nowDateTime = _selectedDay;
-  static CalendarFormat _calenderViewFormat = CalendarFormat.month;
+  DateTime _selectedDay = DateTime.now();
+  DateTime _nowDateTime = DateTime.now();
+  CalendarFormat _calenderViewFormat = CalendarFormat.month;
 
-  static List<Map> get getMemoList => _memoList;
-  static get getCalenderViewFormat => _calenderViewFormat;
-  static get getNowDateTime => _nowDateTime;
-  static get getSelectedDay => _selectedDay;
+  List<Map> get getMemoList => _memoList;
+  get getCalenderViewFormat => _calenderViewFormat;
+  get getNowDateTime => _nowDateTime;
+  get getSelectedDay => _selectedDay;
 
-  static void setSelectedDay(DateTime day){
+  MemoManager(){
+    initDatabase();
+  }
+
+  void setSelectedDay(DateTime day){
     _selectedDay = day;
   }
-  static void setNowDateTimeDay(DateTime day){
+  void setNowDateTimeDay(DateTime day){
     _nowDateTime = day;
   }
-  static void setCalenderViewFormat(CalendarFormat format){
+  void setCalenderViewFormat(CalendarFormat format){
     _calenderViewFormat = format;
   }
   void setMemoList(List<Map> memoList){
     _memoList = memoList;
   }
-  static Future<void> syncMemoWithCalender(String selectedDay) async{
+  Future<void> syncMemoWithCalender(String selectedDay) async{
     _memoList = await _memoDataBase.query("memodata", orderBy: "create_at DESC", where: "create_at=?", whereArgs: [selectedDay]);
   }
 
-  static Future<void> syncMemo() async{
+  Future<void> syncMemo() async{
     _memoList = await _memoDataBase.query("memodata", orderBy: "create_at DESC");
   }
-  static void addMemo(Memo newMemo){
+  void addMemo(Memo newMemo){
     var memoData = <String, dynamic>{
       "uuid": newMemo.getUuid,
       "text_data": newMemo.getTextData,
@@ -50,24 +54,24 @@ class MemoManager{
     _memoDataBase.insert("memodata", memoData);
   }
 
-  static void deleteMemo(String uuid) async{
+  void deleteMemo(String uuid) async{
     await _memoDataBase.delete("memodata", where: "uuid=?", whereArgs: [uuid]);
   }
 
-  static Future<void> updateMemo(String uuid, String newMemo) async{
+  Future<void> updateMemo(String uuid, String newMemo) async{
     var updateValue = <String, dynamic>{
       "text_data": newMemo,
     };
     _memoDataBase.update("memodata", updateValue, where: "uuid=?", whereArgs: [uuid]);
   }
 
-  static initDatabase() async {
+  initDatabase() async {
     String makeTableSql =
     """
         CREATE TABLE memodata (
             uuid CHAR(36) PRIMARY KEY NOT NULL,
             text_data TEXT NOT NULL,
-            create_at TEXT
+            create_at TEXT NOT NULL
         )
       """;
     if(_isNotSmartPhone) {

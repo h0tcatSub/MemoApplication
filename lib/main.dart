@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:memo_application/EditMemoListForm.dart';
 import 'package:memo_application/Memo.dart';
 import 'package:memo_application/MemoManager.dart';
 
 import 'ShowMemoListForm.dart';
 
+late MemoManager _memoManager;
+MemoManager get getMemoManager => _memoManager;
+
 void main() async {
-  MemoManager.initDatabase();
   runApp(MaterialApp(
     //ロケールの設定をする
     localizationsDelegates: const [
@@ -56,7 +59,7 @@ class AddMemoApplication extends StatelessWidget {
       Fluttertoast.showToast(msg: "メモがまだ未入力のようです。");
     }else {
       Memo newMemo = Memo(memoDataController.text);
-      MemoManager.addMemo(newMemo);
+      _memoManager.addMemo(newMemo);
 
       memoDataController.text = "";
       Fluttertoast.showToast(msg: "メモを追加しました!");
@@ -64,6 +67,8 @@ class AddMemoApplication extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
+    _memoManager = MemoManager();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('メモ記録帳',style: GoogleFonts.lato()),
@@ -115,10 +120,12 @@ class AddMemoApplication extends StatelessWidget {
                       primary: Colors.deepOrange,
                       onPrimary: Colors.white,
                     ),
-                    onPressed: () {
-                      MemoManager.syncMemo();
+                    onPressed: () async {
+                      await getMemoManager.syncMemoWithCalender(
+                        DateFormat("yyyy-MM-dd").format(DateTime.now()).toString());
+                      getMemoManager.setSelectedDay(DateTime.now());
                       Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => const ShowMemoListForm()
+                        builder: (context) => const ShowMemoListForm()
                       ));
                     },
                   ),
@@ -136,7 +143,9 @@ class AddMemoApplication extends StatelessWidget {
                       onPrimary: Colors.white,
                     ),
                     onPressed: () async{
-                      await MemoManager.syncMemo();
+                      await getMemoManager.syncMemoWithCalender(
+                          DateFormat("yyyy-MM-dd").format(DateTime.now()).toString());
+                      getMemoManager.setSelectedDay(DateTime.now());
                       Navigator.pushNamed(context, "/ManagementMemo");
                     },
                   ),

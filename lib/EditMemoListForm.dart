@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:memo_application/main.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import 'MemoManager.dart';
+List _syncList(DateTime selectedDay) {
+  getMemoManager.syncMemoWithCalender(
+      DateFormat("yyyy-MM-dd").format(selectedDay).toString());
+  return getMemoManager.getMemoList;
+}
 
 class EditMemoListForm extends StatefulWidget{
   const EditMemoListForm({Key? key}) : super(key: key);
@@ -48,10 +53,11 @@ class _EditMemoListForm extends State<EditMemoListForm>{
                     Fluttertoast.showToast(msg: "メモの内容が未入力です。");
                   }else {
                     //メモテーブルを更新してメモリストを更新する
-                    await MemoManager.updateMemo(
+                    await getMemoManager.updateMemo(
                         uuid,
                         newMemoTextController.text);
-                    await MemoManager.syncMemo();
+                    await getMemoManager.syncMemoWithCalender(
+                        DateFormat("yyyy-mm/dd").format(DateTime.now()).toString());
                     Navigator.pushNamedAndRemoveUntil(context, "/ManagementMemo", ModalRoute.withName("/"));
                   }
                 },
@@ -63,7 +69,6 @@ class _EditMemoListForm extends State<EditMemoListForm>{
 
   @override
   Widget build(BuildContext context){
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -71,49 +76,40 @@ class _EditMemoListForm extends State<EditMemoListForm>{
             style: GoogleFonts.lato()),
       ),
       body : Center(
-        child: Container(
-          width: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-
-              Container(
-                width: double.infinity,
-                height: 100,
-                child: TableCalendar(
-                  focusedDay: MemoManager.getNowDateTime,
-                  calendarFormat: MemoManager.getCalenderViewFormat,
+        child: SingleChildScrollView(
+          child: Container(
+            width: double.infinity,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TableCalendar(
+                  focusedDay: getMemoManager.getNowDateTime,
+                  calendarFormat: getMemoManager.getCalenderViewFormat,
                   firstDay: DateTime.utc(2020, 1, 1),
-                  lastDay: DateTime.utc(2099, 12, 31),
+                  lastDay: DateTime.utc(2999, 12, 31),
                   onFormatChanged: (format){
                     //現在のフォーマットと異なっていたら変更を適用する
-                    if(MemoManager.getCalenderViewFormat != format){
-                      setState(() => MemoManager.setCalenderViewFormat(format));
+                    if(getMemoManager.getCalenderViewFormat != format){
+                      setState(() => getMemoManager.setCalenderViewFormat(format));
                     }
                   },
                   selectedDayPredicate: (day) {
-                    return isSameDay(MemoManager.getSelectedDay, day);
+                    return isSameDay(getMemoManager.getSelectedDay, day);
                   },
-                  onDaySelected: (selectedDay, focusedDay){
-                    if(!isSameDay(MemoManager.getSelectedDay, selectedDay)){
+                  onDaySelected: (selectedDay, focusedDay) {
+                    if (!isSameDay(getMemoManager.getSelectedDay, selectedDay)) {
                       setState(() {
-                        MemoManager.setSelectedDay(selectedDay);
-                        MemoManager.setNowDateTimeDay(focusedDay);
-
-                        MemoManager.syncMemoWithCalender(focusedDay.toUtc().toString());
+                        getMemoManager.setSelectedDay(selectedDay);
+                        getMemoManager.setNowDateTimeDay(focusedDay);
                       });
+                      _syncList(getMemoManager.getSelectedDay);
                     }
                   },
+                  eventLoader: _syncList,
                 ),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(16),
-              ),
-              Container(
-                width: double.infinity,
-                height: 100,
-                child: ListView.builder(
-                    itemCount: MemoManager.getMemoList.length,
+                ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: getMemoManager.getMemoList.length,
                     itemBuilder: (BuildContext listViewContext, index){
                       return Dismissible(
                         key: UniqueKey(),
@@ -122,17 +118,16 @@ class _EditMemoListForm extends State<EditMemoListForm>{
                             onTap: () async {
                               await editMemo(
                                   listViewContext,
-                                  MemoManager.getMemoList[index]["uuid"],
-                                  MemoManager.getMemoList[index]["text_data"]);
+                                  getMemoManager.getMemoList[index]["uuid"],
+                                  getMemoManager.getMemoList[index]["text_data"]);
                             },
-                            title: Text(MemoManager.getMemoList[index]["text_data"],style: GoogleFonts.lato()),
-                            subtitle: Text("作成日: ${MemoManager.getMemoList[index]["create_at"]}",style: GoogleFonts.lato()),
+                            title: _syncList(getMemoManager.getSelectedDay)
+                                .map((syncMemo) => Text(syncMemo["text_data"].toString())).toList()[index],
                           ),
                         ),
-
                         //メモが横にスワイプされたらメモテーブルからデータを削除してリストを更新する
                         onDismissed: (direction){
-                          MemoManager.deleteMemo(MemoManager.getMemoList[index]["uuid"]);
+                          getMemoManager.deleteMemo(getMemoManager.getMemoList[index]["uuid"]);
                         },
                         background: Container(
                           color: Colors.red,
@@ -140,10 +135,11 @@ class _EditMemoListForm extends State<EditMemoListForm>{
                       );
                     }
                 ),
-              )
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
-  } }
+  }
+}
