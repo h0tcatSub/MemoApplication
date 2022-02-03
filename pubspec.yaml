@@ -41,6 +41,8 @@ dependencies:
   # 中華フォントに対応する
   google_fonts: ^2.1.0
   table_calendar: ^3.0.0
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:
