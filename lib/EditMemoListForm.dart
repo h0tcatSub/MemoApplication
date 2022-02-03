@@ -63,10 +63,11 @@ class _EditMemoListForm extends State<EditMemoListForm>{
 
   @override
   Widget build(BuildContext context){
+    getMemoManager.syncMemoWithCalender(
+        DateFormat("yyyy-MM-dd").format(DateTime.now()).toString());
 
-    DateFormat("yyyy-MM-dd").format(DateTime.now()).toString();
     return Scaffold(
-    appBar: AppBar(
+      appBar: AppBar(
         title: Text(
             "登録メモを管理",
             style: GoogleFonts.lato()),
