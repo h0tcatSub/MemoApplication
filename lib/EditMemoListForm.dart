@@ -102,7 +102,6 @@ class _EditMemoListForm extends State<EditMemoListForm>{
                         getMemoManager.setSelectedDay(selectedDay);
                         getMemoManager.setNowDateTimeDay(focusedDay);
                       });
-                      _syncList(getMemoManager.getSelectedDay);
                     }
                   },
                   eventLoader: _syncList,

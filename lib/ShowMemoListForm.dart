@@ -44,13 +44,12 @@ class _ShowMemoListForm extends State<ShowMemoListForm>{
                   selectedDayPredicate: (day) {
                     return isSameDay(getMemoManager.getSelectedDay, day);
                   },
-                  onDaySelected: (selectedDay, focusedDay) async {
+                  onDaySelected: (selectedDay, focusedDay){
                     if (!isSameDay(getMemoManager.getSelectedDay, selectedDay)) {
                       setState(() {
                         getMemoManager.setSelectedDay(selectedDay);
                         getMemoManager.setNowDateTimeDay(focusedDay);
                       });
-                      _syncList(getMemoManager.getSelectedDay);
                     }
                   },
                 ),
