@@ -127,6 +127,7 @@ class _EditMemoListForm extends State<EditMemoListForm>{
                         //メモが横にスワイプされたらメモテーブルからデータを削除してリストを更新する
                         onDismissed: (direction){
                           getMemoManager.deleteMemo(getMemoManager.getMemoList[index]["uuid"]);
+                          getMemoManager.getMemoList.removeAt(index);
                         },
                         background: Container(
                           color: Colors.red,
