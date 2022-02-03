@@ -54,12 +54,12 @@ class AddMemoApplication extends StatelessWidget {
   AddMemoApplication({Key? key}) : super(key: key);
   final memoDataController = TextEditingController();
 
-  void _addMemo(){
+  void _addMemo() async {
     if(memoDataController.text == ""){
       Fluttertoast.showToast(msg: "メモがまだ未入力のようです。");
     }else {
       Memo newMemo = Memo(memoDataController.text);
-      _memoManager.addMemo(newMemo);
+      await _memoManager.addMemo(newMemo);
 
       memoDataController.text = "";
       Fluttertoast.showToast(msg: "メモを追加しました!");
@@ -123,7 +123,7 @@ class AddMemoApplication extends StatelessWidget {
                     onPressed: () async {
                       await getMemoManager.syncMemoWithCalender(
                         DateFormat("yyyy-MM-dd").format(DateTime.now()).toString());
-                      getMemoManager.setSelectedDay(DateTime.now());
+                      await getMemoManager.setSelectedDay(DateTime.now());
                       Navigator.push(context, MaterialPageRoute(
                         builder: (context) => const ShowMemoListForm()
                       ));

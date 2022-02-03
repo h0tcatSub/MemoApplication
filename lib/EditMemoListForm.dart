@@ -69,8 +69,8 @@ class _EditMemoListForm extends State<EditMemoListForm>{
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            "登録メモを管理",
-            style: GoogleFonts.lato()),
+          "登録メモを管理",
+          style: GoogleFonts.lato()),
       ),
       body : Container(
         child: SingleChildScrollView(
@@ -125,9 +125,9 @@ class _EditMemoListForm extends State<EditMemoListForm>{
                           ),
                         ),
                         //メモが横にスワイプされたらメモテーブルからデータを削除してリストを更新する
-                        onDismissed: (direction){
-                          getMemoManager.deleteMemo(getMemoManager.getMemoList[index]["uuid"]);
-                          getMemoManager.getMemoList.removeAt(index);
+                        onDismissed: (direction) async {
+                          await getMemoManager.deleteMemo(getMemoManager.getMemoList[index]["uuid"]);
+                          await getMemoManager.getMemoList.removeAt(index);
                         },
                         background: Container(
                           color: Colors.red,

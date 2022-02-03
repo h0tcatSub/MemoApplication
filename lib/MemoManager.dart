@@ -51,16 +51,16 @@ class MemoManager{
   Future<void> syncMemo() async{
     _memoList = await _memoDataBase.query("memodata", orderBy: "create_at DESC");
   }
-  void addMemo(Memo newMemo){
+  Future<void> addMemo(Memo newMemo) async {
     var memoData = <String, dynamic>{
       "uuid": newMemo.getUuid,
       "text_data": newMemo.getTextData,
       "create_at": newMemo.getCreateAt
     };
-    _memoDataBase.insert("memodata", memoData);
+    await _memoDataBase.insert("memodata", memoData);
   }
 
-  void deleteMemo(String uuid) async{
+  Future<void> deleteMemo(String uuid) async{
     await _memoDataBase.delete("memodata", where: "uuid=?", whereArgs: [uuid]);
   }
 
