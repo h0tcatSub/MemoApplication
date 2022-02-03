@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:memo_application/main.dart';
+import 'package:table_calendar/table_calendar.dart';
 
-class EditMemoListForm extends StatelessWidget{
+class EditMemoListForm extends StatefulWidget{
   const EditMemoListForm({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _EditMemoListForm();
+}
+
+class _EditMemoListForm extends State<EditMemoListForm>{
 
   editMemo(BuildContext context, String uuid, String memo)
   {
@@ -38,12 +46,12 @@ class EditMemoListForm extends StatelessWidget{
                   if(newMemoTextController.text == ""){
                     Fluttertoast.showToast(msg: "メモの内容が未入力です。");
                   }else {
-
-                    //メモテーブルを更新してメモリストを更新する
-                    await MainMenu.getMemoDataManager.updateMemo(
+                    //メモテーブルを更新して表示用メモリストを最新にする
+                    await getMemoManager.updateMemo(
                         uuid,
                         newMemoTextController.text);
-                    await MainMenu.getMemoDataManager.syncMemo();
+                    await getMemoManager.syncMemoWithCalender(
+                        DateFormat("yyyy-mm/dd").format(DateTime.now()).toString());
                     Navigator.pushNamedAndRemoveUntil(context, "/ManagementMemo", ModalRoute.withName("/"));
                   }
                 },
@@ -62,34 +70,72 @@ class EditMemoListForm extends StatelessWidget{
             "登録メモを管理",
             style: GoogleFonts.lato()),
       ),
-      body : ListView.builder(
-          itemCount: MainMenu.getMemoDataManager.getMemoList.length,
-          itemBuilder: (BuildContext listViewContext, index){
-            return Dismissible(
-              key: UniqueKey(),
-              child: Card(
-                child: ListTile(
-                  onTap: () async {
-                    await editMemo(
-                        listViewContext,
-                        MainMenu.getMemoDataManager.getMemoList[index]["uuid"],
-                        MainMenu.getMemoDataManager.getMemoList[index]["text_data"]);
+      body : Container(
+        child: SingleChildScrollView(
+          child: Container(
+            width: double.infinity,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TableCalendar(
+                  focusedDay: getMemoManager.getNowFocusDateTime,
+                  calendarFormat: getMemoManager.getCalenderViewFormat,
+                  firstDay: DateTime.utc(2020, 1, 1),
+                  lastDay: DateTime.utc(2999, 12, 31),
 
+                  onPageChanged: (focusDay){
+                    getMemoManager.setNowFocusTimeDay(focusDay);
                   },
-                  title: Text(MainMenu.getMemoDataManager.getMemoList[index]["text_data"],style: GoogleFonts.lato()),
-                  subtitle: Text(MainMenu.getMemoDataManager.getMemoList[index]["create_at"],style: GoogleFonts.lato()),
-                ),
-              ),
+                  onFormatChanged: (format){
+                    //現在のフォーマットと異なっていたら変更を適用する
+                    if(getMemoManager.getCalenderViewFormat != format){
+                      setState(() => getMemoManager.setCalenderViewFormat(format));
+                    }
+                  },
+                  selectedDayPredicate: (day) {
+                    return isSameDay(getMemoManager.getSelectedDay, day);
+                  },
+                  onDaySelected: (selectedDay, focusedDay) async {
+                    if (!isSameDay(getMemoManager.getSelectedDay, selectedDay)) {
+                      await getMemoManager.setSelectedDay(selectedDay);
+                      await getMemoManager.setNowFocusTimeDay(focusedDay);
+                      await getMemoManager.syncListWithDate(getMemoManager.getSelectedDay);
 
-              //メモが横にスワイプされたらメモテーブルからデータを削除してリストを更新する
-              onDismissed: (direction){
-                MainMenu.getMemoDataManager.deleteMemo(MainMenu.getMemoDataManager.getMemoList[index]["uuid"]);
-              },
-              background: Container(
-                color: Colors.red,
-              ),
-            );
-          }
+                      setState(() {});
+                    }
+                  },
+                ),
+                ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: (getMemoManager.getMemoList).length ,
+                    itemBuilder: (BuildContext listViewContext, index){
+                      return Dismissible(
+                        key: UniqueKey(),
+                        child: Card(
+                          child: ListTile(
+                            onTap: () async {
+                              await editMemo(
+                                  listViewContext,
+                                  (getMemoManager.getMemoList)[index]["uuid"],
+                                  (getMemoManager.getMemoList)[index]["text_data"]);
+                            },
+                            title: Text((getMemoManager.getMemoList)[index]["text_data"]),
+                          ),
+                        ),
+                        //メモが横にスワイプされたらメモテーブルからデータを削除してリストを更新する
+                        onDismissed: (direction){
+                          getMemoManager.deleteMemo((getMemoManager.getMemoList as List)[index]["uuid"]);
+                        },
+                        background: Container(
+                          color: Colors.red,
+                        ),
+                      );
+                    }
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
