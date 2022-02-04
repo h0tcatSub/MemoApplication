@@ -5,7 +5,9 @@ class Memo{
   String _uuid = "";
   String _textData = "";
   String _createAt = "";
+  static const String _memoFormat = "yyyy-MM-dd";
 
+  static String get getMemoFormat => _memoFormat;
   String get getUuid => _uuid;
   String get getTextData => _textData;
   String get getCreateAt => _createAt;
@@ -15,7 +17,7 @@ class Memo{
 
   Memo(String textData){
     _textData = textData;
-    _uuid     = Uuid().v1();
-    _createAt = DateFormat("yyyy-MM-dd").format(DateTime.now()).toString();
+    _uuid     = const Uuid().v1();
+    _createAt = DateFormat(_memoFormat).format(DateTime.now()).toString();
   }
 }

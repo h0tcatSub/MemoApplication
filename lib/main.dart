@@ -122,7 +122,7 @@ class AddMemoApplication extends StatelessWidget {
                     ),
                     onPressed: () async {
                       await getMemoManager.syncMemoWithCalender(
-                        DateFormat("yyyy-MM-dd").format(DateTime.now()).toString());
+                        DateFormat(Memo.getMemoFormat).format(DateTime.now()).toString());
                       await getMemoManager.setSelectedDay(DateTime.now());
                       Navigator.push(context, MaterialPageRoute(
                         builder: (context) => const ShowMemoListForm()

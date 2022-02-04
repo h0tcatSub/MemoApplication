@@ -24,7 +24,7 @@ class _EditMemoListForm extends State<EditMemoListForm>{
             title: Text("メモを編集", style: GoogleFonts.lato()),
             content: TextField(
               controller: newMemoTextController,
-              decoration: InputDecoration(hintText: "メモを入力してください"),
+              decoration: const InputDecoration(hintText: "メモを入力してください"),
               style: GoogleFonts.lato(),
             ),
             actions: <Widget>[
@@ -62,7 +62,6 @@ class _EditMemoListForm extends State<EditMemoListForm>{
 
   @override
   Widget build(BuildContext context){
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -105,31 +104,31 @@ class _EditMemoListForm extends State<EditMemoListForm>{
                   },
                 ),
                 ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: getMemoManager.getMemoList.length,
-                    itemBuilder: (BuildContext listViewContext, index){
-                      return Dismissible(
-                        key: UniqueKey(),
-                        child: Card(
-                          child: ListTile(
-                            onTap: () async {
-                              await editMemo(
-                                  context,
-                                  getMemoManager.getMemoList[index]["uuid"],
-                                  getMemoManager.getMemoList[index]["text_data"]);
-                            },
-                            title: Text(getMemoManager.getMemoList[index]["text_data"]),
-                          ),
+                  shrinkWrap: true,
+                  itemCount: getMemoManager.getMemoList.length,
+                  itemBuilder: (BuildContext listViewContext, index){
+                    return Dismissible(
+                      key: UniqueKey(),
+                      child: Card(
+                        child: ListTile(
+                          onTap: () async {
+                            await editMemo(
+                                context,
+                                getMemoManager.getMemoList[index]["uuid"],
+                                getMemoManager.getMemoList[index]["text_data"]);
+                          },
+                          title: Text(getMemoManager.getMemoList[index]["text_data"]),
                         ),
-                        //メモが横にスワイプされたらメモテーブルからデータを削除してリストを更新する
-                        onDismissed: (direction) async {
-                          await getMemoManager.deleteMemo(getMemoManager.getMemoList[index]["uuid"]);
-                        },
-                        background: Container(
-                          color: Colors.red,
-                        ),
-                      );
-                    }
+                      ),
+                      //メモが横にスワイプされたらメモテーブルからデータを削除してリストを更新する
+                      onDismissed: (direction) async {
+                        await getMemoManager.deleteMemo(getMemoManager.getMemoList[index]["uuid"]);
+                      },
+                      background: Container(
+                        color: Colors.red,
+                      ),
+                    );
+                  }
                 ),
               ],
             ),
