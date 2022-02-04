@@ -63,7 +63,6 @@ class _EditMemoListForm extends State<EditMemoListForm>{
   @override
   Widget build(BuildContext context){
 
-    getMemoManager.syncListWithDate(getMemoManager.getSelectedDay);
     return Scaffold(
       appBar: AppBar(
         title: Text(
