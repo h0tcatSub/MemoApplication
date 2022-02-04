@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:memo_application/main.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -50,8 +49,8 @@ class _EditMemoListForm extends State<EditMemoListForm>{
                     await getMemoManager.updateMemo(
                         uuid,
                         newMemoTextController.text);
-                    await getMemoManager.syncMemoWithCalender(
-                        DateFormat("yyyy-MM-dd").format(DateTime.now()).toString());
+
+                    await getMemoManager.syncListWithDate(getMemoManager.getSelectedDay);
                     Navigator.pushNamedAndRemoveUntil(context, "/ManagementMemo", ModalRoute.withName("/"));
                   }
                 },
@@ -63,9 +62,8 @@ class _EditMemoListForm extends State<EditMemoListForm>{
 
   @override
   Widget build(BuildContext context){
-    getMemoManager.syncMemoWithCalender(
-        DateFormat("yyyy-MM-dd").format(DateTime.now()).toString());
 
+    getMemoManager.syncListWithDate(getMemoManager.getSelectedDay);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -109,7 +107,7 @@ class _EditMemoListForm extends State<EditMemoListForm>{
                 ),
                 ListView.builder(
                     shrinkWrap: true,
-                    itemCount: (getMemoManager.getMemoList).length ,
+                    itemCount: getMemoManager.getMemoList.length,
                     itemBuilder: (BuildContext listViewContext, index){
                       return Dismissible(
                         key: UniqueKey(),
@@ -117,7 +115,7 @@ class _EditMemoListForm extends State<EditMemoListForm>{
                           child: ListTile(
                             onTap: () async {
                               await editMemo(
-                                  listViewContext,
+                                  context,
                                   getMemoManager.getMemoList[index]["uuid"],
                                   getMemoManager.getMemoList[index]["text_data"]);
                             },
@@ -127,7 +125,6 @@ class _EditMemoListForm extends State<EditMemoListForm>{
                         //メモが横にスワイプされたらメモテーブルからデータを削除してリストを更新する
                         onDismissed: (direction) async {
                           await getMemoManager.deleteMemo(getMemoManager.getMemoList[index]["uuid"]);
-                          await getMemoManager.getMemoList.removeAt(index);
                         },
                         background: Container(
                           color: Colors.red,

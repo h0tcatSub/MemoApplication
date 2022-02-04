@@ -28,7 +28,7 @@ class MemoManager{
   }
 
   Future<void> syncListWithDate(DateTime selectedDay) async {
-    syncMemoWithCalender(
+    await syncMemoWithCalender(
         DateFormat("yyyy-MM-dd").format(selectedDay).toString());
   }
 
