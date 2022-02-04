@@ -75,12 +75,12 @@ class AddMemoApplication extends StatelessWidget {
       ),
       body: Center(
         child: SingleChildScrollView(
-          child: Container(
+          child: SizedBox(
             width: double.infinity,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
+                SizedBox(
                   width: double.infinity,
                   height: 250,
                   child: TextField(
@@ -96,7 +96,7 @@ class AddMemoApplication extends StatelessWidget {
                 const Padding(
                   padding: EdgeInsets.all(32),
                 ),
-                Container(
+                SizedBox(
                   width: double.infinity,
                   height: 100,
                   child: ElevatedButton(
@@ -111,7 +111,7 @@ class AddMemoApplication extends StatelessWidget {
                 const Padding(
                   padding: EdgeInsets.all(64),
                 ),
-                Container(
+                SizedBox(
                   width: double.infinity,
                   height: 100,
                   child: ElevatedButton(
@@ -133,7 +133,7 @@ class AddMemoApplication extends StatelessWidget {
                 const Padding(
                   padding: EdgeInsets.all(8),
                 ),
-                Container(
+                SizedBox(
                   width: double.infinity,
                   height: 100,
                   child: ElevatedButton(
