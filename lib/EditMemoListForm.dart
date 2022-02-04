@@ -68,70 +68,68 @@ class _EditMemoListForm extends State<EditMemoListForm>{
           "登録メモを管理",
           style: GoogleFonts.lato()),
       ),
-      body : Container(
-        child: SingleChildScrollView(
-          child: Container(
-            width: double.infinity,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TableCalendar(
-                  focusedDay: getMemoManager.getNowFocusDateTime,
-                  calendarFormat: getMemoManager.getCalenderViewFormat,
-                  firstDay: DateTime.utc(2020, 1, 1),
-                  lastDay: DateTime.utc(2999, 12, 31),
+      body : SingleChildScrollView(
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TableCalendar(
+                focusedDay: getMemoManager.getNowFocusDateTime,
+                calendarFormat: getMemoManager.getCalenderViewFormat,
+                firstDay: DateTime.utc(2020, 1, 1),
+                lastDay: DateTime.utc(2999, 12, 31),
 
-                  onPageChanged: (focusDay){
-                    getMemoManager.setNowFocusTimeDay(focusDay);
-                  },
-                  onFormatChanged: (format){
-                    //現在のフォーマットと異なっていたら変更を適用する
-                    if(getMemoManager.getCalenderViewFormat != format){
-                      setState(() => getMemoManager.setCalenderViewFormat(format));
-                    }
-                  },
-                  selectedDayPredicate: (day) {
-                    return isSameDay(getMemoManager.getSelectedDay, day);
-                  },
-                  onDaySelected: (selectedDay, focusedDay) async {
-                    if (!isSameDay(getMemoManager.getSelectedDay, selectedDay)) {
-                      await getMemoManager.setSelectedDay(selectedDay);
-                      await getMemoManager.setNowFocusTimeDay(focusedDay);
-                      await getMemoManager.syncListWithDate(getMemoManager.getSelectedDay);
-
-                      setState(() {});
-                    }
-                  },
-                ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: getMemoManager.getMemoList.length,
-                  itemBuilder: (BuildContext listViewContext, index){
-                    return Dismissible(
-                      key: UniqueKey(),
-                      child: Card(
-                        child: ListTile(
-                          onTap: () async {
-                            await editMemo(
-                                context,
-                                getMemoManager.getMemoList[index]["uuid"],
-                                getMemoManager.getMemoList[index]["text_data"]);
-                          },
-                          title: Text(getMemoManager.getMemoList[index]["text_data"]),
-                        ),
-                      ),
-                      //メモが横にスワイプされたらメモテーブルからデータを削除してリストを更新する
-                      onDismissed: (direction) async {
-                        await getMemoManager.deleteMemo(getMemoManager.getMemoList[index]["uuid"]);
-                      },
-                      background: Container(
-                        color: Colors.red,
-                      ),
-                    );
+                onPageChanged: (focusDay){
+                  getMemoManager.setNowFocusTimeDay(focusDay);
+                },
+                onFormatChanged: (format){
+                  //現在のフォーマットと異なっていたら変更を適用する
+                  if(getMemoManager.getCalenderViewFormat != format){
+                    setState(() => getMemoManager.setCalenderViewFormat(format));
                   }
-                ),
-              ],
-            ),
+                },
+                selectedDayPredicate: (day) {
+                  return isSameDay(getMemoManager.getSelectedDay, day);
+                },
+                onDaySelected: (selectedDay, focusedDay) async {
+                  if (!isSameDay(getMemoManager.getSelectedDay, selectedDay)) {
+                    await getMemoManager.setSelectedDay(selectedDay);
+                    await getMemoManager.setNowFocusTimeDay(focusedDay);
+                    await getMemoManager.syncListWithDate(getMemoManager.getSelectedDay);
+
+                    setState(() {});
+                  }
+                },
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: getMemoManager.getMemoList.length,
+                itemBuilder: (BuildContext listViewContext, index){
+                  return Dismissible(
+                    key: UniqueKey(),
+                    child: Card(
+                      child: ListTile(
+                        onTap: () async {
+                          await editMemo(
+                              context,
+                              getMemoManager.getMemoList[index]["uuid"],
+                              getMemoManager.getMemoList[index]["text_data"]);
+                        },
+                        title: Text(getMemoManager.getMemoList[index]["text_data"]),
+                      ),
+                    ),
+                    //メモが横にスワイプされたらメモテーブルからデータを削除してリストを更新する
+                    onDismissed: (direction) async {
+                      await getMemoManager.deleteMemo(getMemoManager.getMemoList[index]["uuid"]);
+                    },
+                    background: Container(
+                      color: Colors.red,
+                    ),
+                  );
+                }
+              ),
+            ],
           ),
         ),
       ),
