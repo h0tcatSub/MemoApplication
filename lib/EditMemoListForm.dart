@@ -121,7 +121,7 @@ class _EditMemoListForm extends State<EditMemoListForm>{
                         title: Text(getMemoManager.getMemoList[index]["text_data"]),
                       ),
                     ),
-                    //メモが横にスワイプされたらメモテーブルからデータを削除してリストを更新する
+                    //メモが横にスワイプされたらメモテーブルから削除する
                     onDismissed: (direction) async {
                       await getMemoManager.deleteMemo(getMemoManager.getMemoList[index]["uuid"]);
                     },
